@@ -311,6 +311,11 @@ textarea {
     border: 2px solid black;
 }
 
+.row {
+    clear: both;
+    float: none;
+}
+
 .tile {
     background: url(../img/Castle_2.png) no-repeat;
     display: inline;
@@ -330,25 +335,55 @@ textarea {
 }
 
 .tile-tower-leftborder {
-    width: 26px;
-    height: 112px;
-    background-position: -198px 0;
+    width: 32px;
+    height: 96px;
+    background-position: -192px 0;
 }
 
 .tile-tower-spike {
     width: 32px;
-    height: 112px;
+    height: 96px;
     background-position: -224px 0;
 }
 
 .tile-tower-square {
     width: 32px;
-    height: 112px;
+    height: 96px;
     background-position: -256px 0;
 }
 
 .tile-tower-rightborder {
-    width: 26px;
-    height: 112px;
+    width: 32px;
+    height: 96px;
     background-position: -288px 0;
+}
+
+.tile-wall-end-left {
+    width: 32px;
+    height: 96px;
+    background-position: -192px -128px;
+}
+
+.tile-wall-end-right {
+    width: 32px;
+    height: 96px;
+    background-position: -288px -128px;
+}
+
+.tile-wall {
+    background: none;
+    width: 32px;
+    height: 96px;
+}
+
+.tile-wall-part {
+    width: 32px;
+    height: 32px;
+    background-position: -32px -114px;
+}
+
+.tile-wall-bottom {
+    width: 32px;
+    height: 32px;
+    background-position: -32px -146px;
 }
