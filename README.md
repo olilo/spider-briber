@@ -17,7 +17,7 @@ features of HTML5 yet. But they will surely come (like sound, or using a canvas)
 
 Lo and behold, a first screenshot (well, only the background is done for now):
 
-![First screenshot](img/screenshots/spider_briber_background1.png)
+![First screenshot](https://github.com/olilo/spider-briber/blob/master/img/screenshots/spider_briber_background1.png)
 
 ## Used tilesets
 
