@@ -314,8 +314,11 @@ textarea {
 
 .map {
     position: absolute;
-    top: 0;
+    top: -2600px;
     left: 0;
+    width: 3200px;
+    height: 3200px;
+    background: url(../img/background.png);
 }
 
 .row {
@@ -323,81 +326,13 @@ textarea {
     float: none;
 }
 
-.tile, .tile-wall span {
-    background: url(../img/Castle_2.png) no-repeat;
-    position: relative;
-    display: inline;
-    float: left;
-}
-
-.tile-gate-open, .tile-gate-closed {
+.gate-open, .gate-closed {
+    position: absolute;
     width: 96px;
     height: 96px;
-    background-position: -320px -96px;
+    background: url(../img/Castle_2.png) no-repeat -320px -96px;
 }
 
-.tile-gate-open {
+.gate-open {
     background-position: -416px -96px;
-}
-
-.tile-tower-leftborder, .tile-tower-spike, .tile-tower-square, .tile-tower-rightborder {
-    width: 32px;
-    height: 96px;
-    background-position: -192px 0;
-}
-
-.tile-tower-spike {
-    background-position: -224px 0;
-}
-
-.tile-tower-square {
-    background-position: -256px 0;
-}
-
-.tile-tower-rightborder {
-    background-position: -288px 0;
-}
-
-.tile-wall-end-left {
-    width: 32px;
-    height: 96px;
-    background-position: -192px -128px;
-}
-
-.tile-wall-end-right {
-    width: 32px;
-    height: 96px;
-    background-position: -288px -128px;
-}
-
-.tile-wall {
-    width: 32px;
-    height: 96px;
-    background: none;
-}
-
-.tile-wall span {
-    background-image: url(../img/Castle_2.png);
-}
-
-span.tile-wall-part {
-    width: 32px;
-    height: 32px;
-    background-position: -32px -114px;
-}
-
-span.tile-wall-bottom {
-    width: 32px;
-    height: 32px;
-    background-position: -32px -146px;
-}
-
-span.fluff-shield {
-    width: 32px;
-    height: 64px;
-    background-position: -64px -200px;
-    position: absolute;
-    top: 16px;
-    left: 0;
-    z-index: 1;
 }

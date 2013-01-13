@@ -10,11 +10,20 @@ Through causes that have yet to be determined the spiders are susceptible to bri
 and so you can throw money at them to fend them off.
 The game ends when you reach your weapon stash.
 
-I hope that I won't have to use a canvas (because I don't have any experience there),
-but maybe there's no way around it.
+For now the whole "HTML5" part is in name only, because I don't really use any
+features of HTML5 yet. But they will surely come (like sound, or using a canvas).
 
 ## Screenshots
 
-There's not really anything to show at the moment, but I use the castle tiles from
-http://opengameart.org/content/castle-tiles-for-rpgs, so expect it to look similar
-(but much, much smaller than what was given there as an example).
+Lo and behold, a first screenshot (well, only the background is done for now):
+
+![First screenshot](https://docs.google.com/file/d/0B7YhTOpNX28UWXM2ZlFPa1M5ejA/edit)
+
+## Used tilesets
+
+I have mostly used tilesets from opengameart.org (great site by the way).
+These are the tilesets I have used or plan to use:
+
+  * http://opengameart.org/content/castle-tiles-for-rpgs
+  * http://opengameart.org/content/pagesofadventure-interior-tileset
+  * http://opengameart.org/content/spider-flare-sprite-sheets
