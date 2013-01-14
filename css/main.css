@@ -299,7 +299,7 @@ textarea {
 
 
 /**
- * Game code ...
+ * Game styles ...
  */
 
 .playingfield {
@@ -310,6 +310,7 @@ textarea {
     position: relative;
     border: 2px solid black;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .map {
@@ -318,7 +319,6 @@ textarea {
     left: 0;
     width: 3200px;
     height: 3200px;
-    background: url(../img/background.png);
 }
 
 .row {
@@ -328,11 +328,21 @@ textarea {
 
 .gate-open, .gate-closed {
     position: absolute;
-    width: 96px;
+    width: 56px;
     height: 96px;
-    background: url(../img/Castle_2.png) no-repeat -320px -96px;
+    background: url(../img/Castle_2.png) no-repeat -340px -96px;
+    z-index: 1;
 }
 
 .gate-open {
-    background-position: -416px -96px;
+    background-position: -436px -96px;
+    z-index: 3;
+}
+
+.player {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: url(../img/player.gif) no-repeat;
+    z-index: 2;
 }
