@@ -321,6 +321,13 @@ textarea {
     height: 3200px;
 }
 
+.towers-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 100;
+}
+
 .row {
     clear: both;
     float: none;
