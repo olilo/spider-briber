@@ -302,10 +302,34 @@ textarea {
  * Game styles ...
  */
 
+.hud {
+    width: 800px;
+    margin: 0 auto;
+    position: relative;
+    font-size: 24px;
+}
+
+.health {
+    font-weight: bold;
+    color: green;
+    margin: 0 450px 0 10px;
+    padding: 10px 0 0;
+}
+
+.points {
+    font-weight: bold;
+    margin: 0 0 0 10px;
+    float: right;
+}
+
+.health-low {
+    color: red;
+}
+
 .playingfield {
     width: 800px;
     height: 600px;
-    margin: 20px auto 0;
+    margin: 10px auto 0;
     padding: 0;
     position: relative;
     border: 2px solid black;
@@ -352,4 +376,11 @@ textarea {
     height: 50px;
     background: url(../img/player.gif) no-repeat;
     z-index: 2;
+}
+
+.spider {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    background: url(../img/spider_0.png) no-repeat -43px -71px;
 }
