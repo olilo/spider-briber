@@ -2,8 +2,10 @@
 
 var gates = {
     "gate1": {
-        'open': false
+        open: false,
         // TODO define position + width/height too for walk checking
+
+        opensWalkableAreas: [1]
     }
 };
 var player = {
@@ -14,6 +16,10 @@ var player = {
         top: 0
     },
     target: {
+        left: 0,
+        top: 0
+    },
+    moneyTarget: {
         left: 0,
         top: 0
     }
@@ -59,6 +65,12 @@ function updateHUD() {
     jQuery(".points").html(player.points);
 }
 
+// canvas playground ...
+document.getElementById("background").onload=function() {
+    var context = document.getElementById("gamearea").getContext("2d");
+    context.drawImage(document.getElementById("background"), 0, 2600, 800, 600, 0, 0, 800, 600);
+};
+
 jQuery(function() {
     // init variables
     var $player = jQuery(".player");
@@ -89,9 +101,30 @@ jQuery(function() {
 
     playingField.bind('click', function(e) {
         var mapPosition = map.position();
-        player.target.left = mapPosition.left + playerOffsetX + e.pageX;
-        player.target.top = -mapPosition.top + playerOffsetY + e.pageY;
-        console.log(player.target.left + "--" + player.target.top);
+        var clickedLeft = mapPosition.left + playerOffsetX + e.pageX;
+        var clickedTop = -mapPosition.top + playerOffsetY + e.pageY;
+        var hitSpider = false;
+        jQuery(".spider").each(function(i, elem) {
+            var $spider = jQuery(elem);
+            console.log($spider.position().left + "-" + ($spider.position().left + $spider.width()) + "/" +
+                $spider.position().top + "-" + ($spider.position().top + $spider.height()) +
+                "  " + clickedLeft + "/" + clickedTop
+            );
+            if ($spider.position().left <= clickedLeft && clickedLeft <= $spider.position().left + $spider.width()
+                && $spider.position().top <= clickedTop && clickedTop <= $spider.position().top + $spider.height()) {
+                hitSpider = true;
+            }
+        });
+        if (hitSpider) {
+            // we clicked on a spider: throw money at spider and stop mouse movement
+            console.log("Clicked on spider at " + e.pageX + ", " + e.pageY);
+            player.target.left = 0;
+            player.target.top = 0;
+        } else {
+            player.target.left = clickedLeft;
+            player.target.top = clickedTop;
+            console.log(player.target.left + "--" + player.target.top);
+        }
     });
 
     jQuery("body").bind('keydown', function(e) {
@@ -165,6 +198,7 @@ jQuery(function() {
             // check whether click is inside area
             if (left >= wx1 && left <= wx2 && top >= wy1 && top <= wy2) {
                 isWalkable = true;
+                break;
             }
         }
 
@@ -174,9 +208,6 @@ jQuery(function() {
             $player.stop().animate({left: left, top: top}, {easing: 'linear', duration: duration});
             player.target.left = left;
             player.target.top = top;
-        } else {
-            // TODO show an animated red x at cursor instead
-            //alert("Not walkable");
         }
     }
 
@@ -186,7 +217,8 @@ jQuery(function() {
 
         if (player.increment.left != 0 || player.increment.top != 0) {
             movePlayer(leftBase + player.increment.left, topBase + player.increment.top);
-        } else if (player.target.left != leftBase || player.target.top != topBase) {
+        } else if ((player.target.left != leftBase || player.target.top != topBase) &&
+            (player.target.left != 0 && player.target.top != 0)) {
             movePlayer(player.target.left, player.target.top);
         }
     }

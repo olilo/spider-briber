@@ -6,22 +6,22 @@
  <tileset firstgid="257" name="Interior" tilewidth="32" tileheight="32">
   <image source="../../../../../../Users/oliver/Documents/Interior.png" width="256" height="288"/>
  </tileset>
- <layer name="Boden" width="100" height="100">
+ <layer name="Boden" width="100" height="100" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt2kFu2zAQQFHpQK68ceRN2hy+vVcdwATo6ci0AjLV4j2ACBwDWfCDoURpmgAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/+XPNw7azNmx7Olxmqfpx30wRtbjc96X2zhX8/85So83TYZp9Tjf5/+t6lI+01/WYwk96ibL/O/39NPqcQ1zv95H7PXKoC3rsSZroG5Tt9ozaIs9TskauCbrI5vjdX4cGuy31eOa9Fiq78z3GFmPrTWybvRwX97Psx5xjZTfnfQYRo9jafWI17ZlL9FjjFf2j+waV48xWj3ivm4/HyvO3WV+bLIkayTeX+jRz9Z5YjlTjGskrpPsb+jxdVs9Lsn9Rt1EjzF+T8971OdP8SzkrEd3WY/L/DiyPf5qfQyx1aN+3hT7xGdRevST9dhLj35aPcoz82fPA/XoZ2+P7Ixdj3729vjQY6it69161D3i52nSo6fYo8x3/KnH98h61OuiXN/Wzz70GCfrUd9nvN/Gz9v4dd879Bgr6/GedChnVtmeokc/scelsSYuegwVe2Rro7wvuiYt9Ogr6xHXRvY/qn6erkc/rR6td3I/9Oiq1eOVd3L16Ce7P49Nno1p0qMn5+3Hosex6HEsehzLX2I5n4s=
   </data>
  </layer>
  <layer name="Boden-Fluff" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt0TEOQEAURdGZNdDR0bFsrADr8zVqhWQmck7y+pfclAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/m+NbaVP8DhiZ+kTAMArS6zJKbW59BNue6yLFr0e1RiixahHNaZoMesBAAB84AIopgUT
+   eJzt0aENgEAURMF/NYADxzkomxIokMUjSTgxk6zf5FUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwLszm1rV3P5+wuPKlrRY9RjGlhZdj2HsaXHoAQAAfOAG68QCXQ==
   </data>
  </layer>
- <layer name="Mauern" width="100" height="100">
+ <layer name="Mauern" width="100" height="100" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt260OwjAUBtBaHoUn4EcADoIAHAQBOAjv/wDULIFlYiyMdts5yafuxM1q2ps2BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6IZx6gb4cGopNGM98vJoKQDwzv44L9Oa4T/sd/NiPfLi/AEAQJeMfvwd9End+aA54n+U5xyLmGXMqqJG+8r/fBezjzlU1Ghfee50ibnG3CpqAAAA9If5LpC7SczsixT3QOcpmh2Adfic3W5CvXuH2xTNDsAxfPf+rFivc4pmB+Aemr1De6ZotqdePYBE/w==
   </data>
  </layer>
- <layer name="Mauer-Fluff" width="100" height="100">
+ <layer name="Mauer-Fluff" width="100" height="100" visible="0">
   <data encoding="base64" compression="zlib">
    eJztzrsNwjAUBdCsGmUEiiQbwAakJ0yQMB9GcoUc8XnCpDhHusW7voWbBgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4HtDoRsDO2KOhe4U2BFzLnRTYAcAwPv6D3vqaf/9AQAAAIAf6l7c1DGnXFMOT/3jvuRQz5py23hbcgAAAAAAAPboDj6YDsg=
   </data>
