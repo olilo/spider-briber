@@ -6,29 +6,29 @@
  <tileset firstgid="257" name="Interior" tilewidth="32" tileheight="32">
   <image source="../../../../../../Users/oliver/Documents/Interior.png" width="256" height="288"/>
  </tileset>
- <layer name="Boden" width="100" height="100" visible="0">
+ <layer name="Boden" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2kFu2zAQQFHpQK68ceRN2hy+vVcdwATo6ci0AjLV4j2ACBwDWfCDoURpmgAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/+XPNw7azNmx7Olxmqfpx30wRtbjc96X2zhX8/85So83TYZp9Tjf5/+t6lI+01/WYwk96ibL/O/39NPqcQ1zv95H7PXKoC3rsSZroG5Tt9ozaIs9TskauCbrI5vjdX4cGuy31eOa9Fiq78z3GFmPrTWybvRwX97Psx5xjZTfnfQYRo9jafWI17ZlL9FjjFf2j+waV48xWj3ivm4/HyvO3WV+bLIkayTeX+jRz9Z5YjlTjGskrpPsb+jxdVs9Lsn9Rt1EjzF+T8971OdP8SzkrEd3WY/L/DiyPf5qfQyx1aN+3hT7xGdRevST9dhLj35aPcoz82fPA/XoZ2+P7Ixdj3729vjQY6it69161D3i52nSo6fYo8x3/KnH98h61OuiXN/Wzz70GCfrUd9nvN/Gz9v4dd879Bgr6/GedChnVtmeokc/scelsSYuegwVe2Rro7wvuiYt9Ogr6xHXRvY/qn6erkc/rR6td3I/9Oiq1eOVd3L16Ce7P49Nno1p0qMn5+3Hosex6HEsehzLX2I5n4s=
+   eJzt2tFq2zAUgGH7gTLnxnVuuvXht/daCjEoZ8dWXKRi2PeBKGmgF/pRZcseBgAAAAAAAAAAAAAAAAAAAAAAAIB9f75xUGfOzuVIj8s4DD8egz6yHp/zPt3HtZj/z7H2eNOkm1qP62P+34ou62fay3pMoUfZZBr//Z52aj1uYe6Xx4i9XhnUZT2WZA2UbcpWRwZ1scclWQO3ZH1kc7yMz0OD47Z63JIeU/Gd+e4j67G1RpaNHu7L29nrEdfI+ruLHt3ocS61HvHadt1L9Ojjlf0ju8bVo49aj7iv28/7inM3j89NpmSNxPsLPdrZOk9czxTjGonrJPsbenzdVo85ud8om+jRx+9hv0d5/hTPQq56NJf1mMfnke3xN+uji60e5fOm2Cc+i9KjnazHUXq0U+uxPjPfex6oRztHe2Rn7Hq0c7THhx5dbV3vlqPsET8Pgx4txR7rfMefenyPrEe5Ltbr2/LZhx79ZD3K+4z3+/h5H78ee4cefWU93pMO65lVtqfo0U7sMVfWxKxHV7FHtjbW90WXpIUebWU94trI/keVz9P1aKfWo/ZO7oceTdV6vPJOrh7tZPfnscneGAY9WnLefi56nIse56IHAAAA8L/4C9GFn4s=
   </data>
  </layer>
  <layer name="Boden-Fluff" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt0aENgEAURMF/NYADxzkomxIokMUjSTgxk6zf5FUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwLszm1rV3P5+wuPKlrRY9RjGlhZdj2HsaXHoAQAAfOAG68QCXQ==
+   eJzt0bEJgFAQRMH7NWimmWZatiVYoGsVnjADmy+8KgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPi3K5tG1Ty+fsLrzpa0WPVoY0uLXY82jrQ49QAAAAAAAIDWHm0PAl0=
   </data>
  </layer>
- <layer name="Mauern" width="100" height="100" visible="0">
+ <layer name="Mauern" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt260OwjAUBtBaHoUn4EcADoIAHAQBOAjv/wDULIFlYiyMdts5yafuxM1q2ps2BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6IZx6gb4cGopNGM98vJoKQDwzv44L9Oa4T/sd/NiPfLi/AEAQJeMfvwd9End+aA54n+U5xyLmGXMqqJG+8r/fBezjzlU1Ghfee50ibnG3CpqAAAA9If5LpC7SczsixT3QOcpmh2Adfic3W5CvXuH2xTNDsAxfPf+rFivc4pmB+Aemr1De6ZotqdePYBE/w==
+   eJzt260OwjAUBtBaHoUn4EcADoIAHAQBOAjv/wDUkMAysS3bWtg5yafuxM1q2ps2BAAAAAAAAAAAAAAAAAAAAAAAAACgTePUDfDl1FFoxnrk5dFRAOCT/XFephVDP+x382I98uL8AQDALxm1/B38k6rzQXPEfhTnHIuYZcyqpEb3iv98F7OPOZTU6F5x7nSJucbcSmoAAAD8D/NdIHeTmFmNvO+BzlM0OwDr8D273YRq9w63KZodgGOo9/7svV7nFM0OwD00e4f2TNEsAAAAQE0vtRVE/w==
   </data>
  </layer>
- <layer name="Mauer-Fluff" width="100" height="100" visible="0">
+ <layer name="Mauer-Fluff" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJztzrsNwjAUBdCsGmUEiiQbwAakJ0yQMB9GcoUc8XnCpDhHusW7voWbBgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4HtDoRsDO2KOhe4U2BFzLnRTYAcAwPv6D3vqaf/9AQAAAIAf6l7c1DGnXFMOT/3jvuRQz5py23hbcgAAAAAAAPboDj6YDsg=
+   eJztzsENgkAUBFBaJZTAQegAO9C7WIFQn0vCySwR8uOa6HvJHP7sHLaqAAAAAAAAAAAAAAAAAAAAAAAAAAB+X5fp+sCOmCHTnQM7Yi6Z7hrYAQCw3+lgTzn1tz8AAAAA8EHNm5syxpR7SvvSL/dtDeVMKfPG22MNAAAAAAAAAAAA8F+e4jwOyA==
   </data>
  </layer>
  <layer name="Turm" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt28EJwkAQhtG9iRVobEC0E0uw/0aMh5UcgjjRxf/wHswpl5CPkGUgrQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXbz7AcONYd5jgOHmt7jNM9lwFCz7MH/6ZFFjyx6ZKn2qJ6Pqan2qJ6PqXk+36nVe3x6Pqbmmx78nh5Z9MiiRxY9smw97+oxhh5Z9MiiRxY9siyfb98B3lamX9NjrOp+cGp6jLS2H7yvTL/m/RjL9yOLHln0yKJHFj2y6JFFjyx6ZNEjix5Z9Miytt99N3qMZb+b5dy2/fd0/cfNAgAvD0gSIzE=
+   eJzt20EKglAUhtE3i1ZQtoGonbSE9r+RbCA4kPBaL//BOXBHTsQP8XHB1gAAAAAAAAAAAAAAAAAAAAAAAADWO4xz7DjUnMY5dxxqph6XcW4dhpp5D/anRxY9suiRpdqjej6mptqjej6m5v18h1bvsfZ8TM03Pfg9PbLokUWPLHpk2Xre1aMPPbLokUWPLHpkmT/faQf4WJjpmh59VfeDQ9Ojp6X94HNhpmvej758P7LokUWPLHpk0SOLHln0yKJHFj2y6JFFjyxL+91Po0df9rtZrm3bf0/3PW4WAAAAAAD+4AW2ciMx
   </data>
  </layer>
 </map>

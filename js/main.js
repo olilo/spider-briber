@@ -1,76 +1,169 @@
-// define starting variables
+jQuery(function() {
+    var Game = {
+        fps: 30,
+        elements: [],
+        graphics: new Graphics(jQuery(".playingfield")),
+        background: new GameElement("img/background.png", 0, 0, 800, 600),
+        towerOverlay: new GameElement("img/towers.png", 0, 0, 800, 600),
+        addObject: function(object) {
+            Game.elements.push(object);
+            Game.graphics.addElement(object.element);
+        },
+        update: function() {
+            for (var i = 0; i < Game.elements.length; i++) {
+                Game.elements[i].update();
+            }
+            updateHUD();
+        }
+    };
 
-var gates = {
-    "gate1": {
-        open: false,
-        // TODO define position + width/height too for walk checking
+    Game.background.translate(320, 2280);
+    Game.towerOverlay.translate(320, 2280);
+    Game.graphics.addElement(Game.background);
+    Game.graphics.addElement(Game.towerOverlay, {alwaysOnTop: true});
 
-        opensWalkableAreas: [1]
+
+    // player logic
+    function Player() {
+        this.health = 100;
+        this.points = 0;
+        this.element = new GameElement("img/player.gif", 350, 250, 50, 50);
+        this.speed = 10;
+        this.target = {left: 0, top: 0};
+        this.moneyTarget = {left: 0, top: 0};
     }
-};
-var player = {
-    health: 100,
-    points: 0,
-    increment: {
-        left: 0,
-        top: 0
-    },
-    target: {
-        left: 0,
-        top: 0
-    },
-    moneyTarget: {
-        left: 0,
-        top: 0
+
+    Player.prototype.update = function() {
+        // TODO decide whether: clicked on spider, typed on keyboard, etc.
+        var increment = {x: 0, y: 0};
+        if (keyPressed(keys.up)) increment.y = -this.speed;
+        if (keyPressed(keys.down)) increment.y = this.speed;
+        if (keyPressed(keys.left)) increment.x = -this.speed;
+        if (keyPressed(keys.right)) increment.x = this.speed;
+
+        if (increment.x != 0 || increment.y != 0) {
+            this.move(increment.x, increment.y);
+        }
+    };
+
+    Player.prototype.move = function(xDelta, yDelta) {
+        // TODO also check that player can walk through an open door
+        var isWalkable = false;
+        var xNew = Game.background.sx + this.element.x + xDelta,
+            yNew = Game.background.sy + this.element.y + yDelta;
+        for (var i = walkableArea.length - 1; i >= 0; i--) {
+            var wx1 = walkableArea[i].x;
+            var wy1 = walkableArea[i].y;
+            var wx2 = wx1 + walkableArea[i].width;
+            var wy2 = wy1 + walkableArea[i].height;
+
+            // check whether target is inside area
+            if (xNew > wx1 && xNew < wx2 && yNew > wy1 && yNew < wy2) {
+                isWalkable = true;
+                break;
+            }
+        }
+
+        if (isWalkable) {
+            Game.background.translate(xDelta, yDelta);
+            Game.towerOverlay.translate(xDelta, yDelta);
+            //this.element.move(xDelta, yDelta);
+        }
+    };
+
+    var player = new Player();
+    Game.addObject(player);
+
+
+    // debug functions ... have to be updated to still be valid
+    function moveMapDownAndUp() {
+        jQuery(".map").animate({top: -2000}, 5000, moveUp);
+        function moveUp() {
+            jQuery(".map").animate({top: -2600}, 5000);
+        }
     }
-};
-var keyboardIncrement = 10;
 
-
-/* walkable area is a list of rectangles that define the outline
- * where the player can move. The rectangles are given as:
- * x, y, width, height  (x and y are the coordinates of the top-left point).
- * All values are given as multiples of 32 because the tiles are 32x32.
- */
-var walkableArea = [
-    [32 * 5.35, 32 * 84.5, 32 * 8.75, 32 * 7.6]
-];
-
-function moveMapDownAndUp() {
-    jQuery(".map").animate({top: -2000}, 5000, moveUp);
-    function moveUp() {
-        jQuery(".map").animate({top: -2600}, 5000);
+    function openGate(id) {
+        jQuery("#" + id).hide('slow', function() {
+            jQuery(this).removeClass("gate-closed").addClass("gate-open").show();
+            gates[id].open = true;
+        });
     }
-}
 
-function openGate(id) {
-    jQuery("#" + id).hide('slow', function() {
-        jQuery(this).removeClass("gate-closed").addClass("gate-open").show();
-        gates[id].open = true;
-    });
-}
+    function closeGate(id) {
+        gates[id].open = false;
+        jQuery("#" + id).hide().removeClass("gate-open").addClass("gate-closed").show('slow');
+    }
 
-function closeGate(id) {
-    gates[id].open = false;
-    jQuery("#" + id).hide().removeClass("gate-open").addClass("gate-closed").show('slow');
-}
 
-function spiderAttacks() {
-    player.health -= 5;
-    updateHUD();
-}
+    function Spider() {
+        this.health = 20;
+        this.bribed = false;
+    }
 
-function updateHUD() {
-    jQuery(".health").html(player.health);
-    jQuery(".points").html(player.points);
-}
+    Spider.prototype.attack = function() {
+        player.health -= 5;
+        updateHUD();
+    };
 
-// canvas playground ...
-document.getElementById("background").onload=function() {
-    var context = document.getElementById("gamearea").getContext("2d");
-    context.drawImage(document.getElementById("background"), 0, 2600, 800, 600, 0, 0, 800, 600);
-};
+    function updateHUD() {
+        jQuery(".health").html(player.health);
+        jQuery(".points").html(player.points);
+    }
 
+    /*
+     * Main game loop, first taken from:
+     * http://buddylindsey.com/starting-an-html-5-tile-based-canvas-game-game-area-and-character/,
+     * then adjusted like outlined here:
+     * http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
+     */
+    Game.run = function(){
+        var loops = 0, skipTicks = 1000 / Game.fps,
+            maxFrameSkip = 10,
+            nextGameTick = (new Date).getTime();
+
+        return function() {
+            loops = 0;
+
+            while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
+                Game.update();
+                nextGameTick += skipTicks;
+                loops++;
+            }
+
+            if (loops) Game.graphics.redraw();
+        };
+    };
+
+    (function() {
+        var onEachFrame;
+        if (window.webkitRequestAnimationFrame) {
+            console.log("webkitRequestAnimationFrame present, using it");
+            onEachFrame = function(cb) {
+                var _cb = function() { cb(); webkitRequestAnimationFrame(_cb); };
+                _cb();
+            };
+        } else if (window.mozRequestAnimationFrame) {
+            console.log("mozRequestAnimationFrame present, using it");
+            onEachFrame = function(cb) {
+                var _cb = function() { cb(); mozRequestAnimationFrame(_cb); };
+                _cb();
+            };
+        } else {
+            console.log("Fallback to setInterval");
+            onEachFrame = function(cb) {
+                setInterval(cb, 1000 / 60);
+            }
+        }
+
+        window.onEachFrame = onEachFrame;
+    })();
+
+    window.onEachFrame(Game.run());
+
+});
+
+/*
 jQuery(function() {
     // init variables
     var $player = jQuery(".player");
@@ -172,57 +265,19 @@ jQuery(function() {
         }
     });
 
-    // player move/"attack" logic
-    function movePlayer(left, top) {
-        // TODO also check that player can walk through an open door
-        var isWalkable = false;
-        for (var i = walkableArea.length - 1; i >= 0; i--) {
-            var wx1 = walkableArea[i][0];
-            var wy1 = walkableArea[i][1];
-            var wx2 = wx1 + walkableArea[i][2];
-            var wy2 = wy1 + walkableArea[i][3];
-            console.log(wx1 + "/" + wy1 + " - " + wx2 + "/" + wy2);
-
-            // clicked in proximity to wall? make life easier for the player
-            if (left >= wx1 - 100 && left <= wx1) {
-                left = wx1;
-            } else if (left >= wx2 && left <= wx2 + 100) {
-                left = wx2;
-            }
-            if (top >= wy1 - 100 && top <= wy1) {
-                top = wy1;
-            } else if (top >= wy2 && top <= wy2 + 100) {
-                top = wy2;
-            }
-
-            // check whether click is inside area
-            if (left >= wx1 && left <= wx2 && top >= wy1 && top <= wy2) {
-                isWalkable = true;
-                break;
-            }
-        }
-
-        if (isWalkable) {
-            var distance = Math.sqrt(Math.pow($player.position().left - left, 2) + Math.pow($player.position().top - top, 2));
-            var duration = distance * 3;
-            $player.stop().animate({left: left, top: top}, {easing: 'linear', duration: duration});
-            player.target.left = left;
-            player.target.top = top;
-        }
-    }
-
     function tick() {
         var leftBase = $player.position().left;
         var topBase = $player.position().top;
 
         if (player.increment.left != 0 || player.increment.top != 0) {
-            movePlayer(leftBase + player.increment.left, topBase + player.increment.top);
+            player.move(leftBase + player.increment.left, topBase + player.increment.top);
         } else if ((player.target.left != leftBase || player.target.top != topBase) &&
             (player.target.left != 0 && player.target.top != 0)) {
-            movePlayer(player.target.left, player.target.top);
+            player.move(player.target.left, player.target.top);
         }
     }
 
     setInterval(tick, 1000 / 30);
 
 });
+*/
