@@ -1,11 +1,9 @@
-var gates = {
-    "gate1": {
+var gates = [
+    {
         open: false,
-        // TODO define position + width/height too for walk checking
-        element: GameElement("img/...", 0, 0, 32, 32),
-        opensWalkableAreas: [1]
+        element: new GameElement("img/Castle_2.png", 308, 24, 56, 96, {sx: 340, sy: 96})
     }
-};
+];
 
 /* walkable area is a list of rectangles that define the outline
  * where the player can move. The rectangles are given as:

@@ -3,8 +3,8 @@ jQuery(function() {
         fps: 30,
         elements: [],
         graphics: new Graphics(jQuery(".playingfield")),
-        background: new GameElement("img/background.png", 0, 0, 800, 600),
-        towerOverlay: new GameElement("img/towers.png", 0, 0, 800, 600),
+        background: new GameElement("img/background.png", 0, 0, 800, 600, {sx: 320, sy: 2280}),
+        towerOverlay: new GameElement("img/towers.png", 0, 0, 800, 600, {sx: 320, sy: 2280}),
         addObject: function(object) {
             Game.elements.push(object);
             Game.graphics.addElement(object.element);
@@ -17,11 +17,12 @@ jQuery(function() {
         }
     };
 
-    Game.background.translate(320, 2280);
-    Game.towerOverlay.translate(320, 2280);
     Game.graphics.addElement(Game.background);
     Game.graphics.addElement(Game.towerOverlay, {alwaysOnTop: true});
 
+    for (var i = 0; i < gates.length; i++) {
+        Game.graphics.addElement(gates[i].element);
+    }
 
     // player logic
     function Player() {

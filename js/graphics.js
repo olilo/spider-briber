@@ -5,14 +5,19 @@
  */
 
 // Element that should be used to add to the Graphics object (see below)
-function GameElement(url, x, y, width, height) {
+function GameElement(url, x, y, width, height, translate) {
     this.url = url;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.sx = null;
-    this.sy = null;
+    if (translate) {
+        this.sx = translate.sx;
+        this.sy = translate.sy;
+    } else {
+        this.sx = null;
+        this.sy = null;
+    }
 }
 
 GameElement.prototype.translate = function(xDelta, yDelta) {
