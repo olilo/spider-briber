@@ -30,20 +30,11 @@
     <input class="debug_close_gate" type="submit" value="Close first gate" />
 </form>
 
-<div class="playingfield">
-    <!--
-    <canvas style="z-index: 100" id="gamearea" width="800" height="600">Why you no canvas?</canvas>
-    <img id="background" src="img/background.png"/>
-    <div class="map">
-        <span style="left: 318px; top: 2890px;" class="player">&nbsp;</span>
-        <span style="left: 288px; top: 2750px;" class="spider">&nbsp;</span>
-        <span class="gates">
-            <span style="left: 308px; top: 2624px;" id="gate1" class="gate-closed">&nbsp;</span>
-        </span>
-        <div class="towers-overlay"><img src="img/towers.png"/></div>
-    </div>
-    -->
+<div class="hud">
+    Health: <span class="health">100</span>
+    Points: <span class="points">0</span>
 </div>
+<div class="playingfield"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>

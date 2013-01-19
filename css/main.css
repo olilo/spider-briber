@@ -304,7 +304,7 @@ textarea {
 
 .hud {
     width: 800px;
-    margin: 0 auto;
+    margin: 10px auto 0;
     position: relative;
     font-size: 24px;
 }
@@ -312,14 +312,13 @@ textarea {
 .health {
     font-weight: bold;
     color: green;
-    margin: 0 450px 0 10px;
+    margin: 0 250px 0 10px;
     padding: 10px 0 0;
 }
 
 .points {
     font-weight: bold;
     margin: 0 0 0 10px;
-    float: right;
 }
 
 .health-low {
@@ -335,52 +334,4 @@ textarea {
     border: 2px solid black;
     overflow: hidden;
     cursor: pointer;
-}
-
-.map {
-    position: absolute;
-    top: -2600px;
-    left: 0;
-    width: 3200px;
-    height: 3200px;
-}
-
-.towers-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 100;
-}
-
-.row {
-    clear: both;
-    float: none;
-}
-
-.gate-open, .gate-closed {
-    position: absolute;
-    width: 56px;
-    height: 96px;
-    background: url(../img/Castle_2.png) no-repeat -340px -96px;
-    z-index: 1;
-}
-
-.gate-open {
-    background-position: -436px -96px;
-    z-index: 3;
-}
-
-.player {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: url(../img/player.gif) no-repeat;
-    z-index: 2;
-}
-
-.spider {
-    position: absolute;
-    width: 45px;
-    height: 45px;
-    background: url(../img/spider_0.png) no-repeat -43px -71px;
 }
