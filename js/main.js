@@ -29,7 +29,7 @@ jQuery(function() {
         this.health = 100;
         this.points = 0;
         this.element = new GameElement("img/player.gif", 350, 250, 50, 50);
-        this.speed = 10;
+        this.speed = 6;
         this.target = {left: 0, top: 0};
         this.moneyTarget = {left: 0, top: 0};
     }
@@ -68,6 +68,9 @@ jQuery(function() {
         if (isWalkable) {
             Game.background.translate(xDelta, yDelta);
             Game.towerOverlay.translate(xDelta, yDelta);
+            for (i = 0; i < gates.length; i++) {
+                gates[i].element.move(-xDelta, -yDelta);
+            }
             //this.element.move(xDelta, yDelta);
         }
     };
