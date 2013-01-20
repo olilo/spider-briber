@@ -30,9 +30,18 @@ jQuery(function() {
         this.points = 0;
         this.element = new GameElement("img/player.gif", 350, 250, 50, 50);
         this.speed = 6;
-        this.target = {left: 0, top: 0};
-        this.moneyTarget = {left: 0, top: 0};
+        this.lastClickedAt = {x: 0, y: 0};
+        this.target = {x: this.getMapPosX(), y: this.getMapPosY()};
+        this.moneyTarget = {x: 0, y: 0};
     }
+
+    Player.prototype.getMapPosX = function() {
+        return Game.background.sx + this.element.x;
+    };
+
+    Player.prototype.getMapPosY = function() {
+        return Game.background.sy + this.element.y;
+    };
 
     Player.prototype.update = function() {
         // TODO decide whether: clicked on spider, typed on keyboard, etc.
@@ -42,7 +51,31 @@ jQuery(function() {
         if (keyPressed(keys.left)) increment.x = -this.speed;
         if (keyPressed(keys.right)) increment.x = this.speed;
 
+        // reset target to element position if key pressed
         if (increment.x != 0 || increment.y != 0) {
+            this.target.x = this.getMapPosX();
+            this.target.y = this.getMapPosY();
+        }
+
+        // clicked somewhere new
+        if (clickedAt.x != this.lastClickedAt.x || clickedAt.y != this.lastClickedAt.y) {
+            this.lastClickedAt.x = clickedAt.x;
+            this.lastClickedAt.y = clickedAt.y;
+            this.target.x = Game.background.sx + clickedAt.x - this.element.width / 2;
+            this.target.y = Game.background.sy + clickedAt.y - this.element.height / 2;
+        }
+
+        // move to clicked mouse position
+        var targetDiffX = this.target.x - this.getMapPosX();
+        var targetDiffY = this.target.y - this.getMapPosY();
+        if (targetDiffX != 0 || targetDiffY != 0) {
+            console.log(Math.min(targetDiffY, this.speed));
+            increment.x = Math.max(-this.speed, Math.min(targetDiffX, this.speed));
+            increment.y = Math.max(-this.speed, Math.min(targetDiffY, this.speed));
+        }
+
+        if (increment.x != 0 || increment.y != 0) {
+            console.log("Moving player by: " + increment.x + "/" + increment.y);
             this.move(increment.x, increment.y);
         }
     };
@@ -50,8 +83,8 @@ jQuery(function() {
     Player.prototype.move = function(xDelta, yDelta) {
         // TODO also check that player can walk through an open door
         var isWalkable = false;
-        var xNew = Game.background.sx + this.element.x + xDelta,
-            yNew = Game.background.sy + this.element.y + yDelta;
+        var xNew = this.getMapPosX() + xDelta,
+            yNew = this.getMapPosY() + yDelta;
         for (var i = walkableArea.length - 1; i >= 0; i--) {
             var wx1 = walkableArea[i].x;
             var wy1 = walkableArea[i].y;
@@ -114,6 +147,7 @@ jQuery(function() {
      * then adjusted like outlined here:
      * http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
      */
+    // TODO if the player changes the tab then onEachFrame is not called anymore ... game should pause then
     Game.run = function(){
         var loops = 0, skipTicks = 1000 / Game.fps,
             maxFrameSkip = 10,
@@ -128,7 +162,10 @@ jQuery(function() {
                 loops++;
             }
 
-            if (loops) Game.graphics.redraw();
+            if (loops) {
+                Game.graphics.redraw();
+                if (loops > 1) console.log("Skipped frames: " + (loops - 1));
+            }
         };
     };
 
