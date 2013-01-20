@@ -1,34 +1,30 @@
 jQuery(function() {
-    var Game = {
-        fps: 30,
-        elements: [],
-        graphics: new Graphics(jQuery(".playingfield")),
-        background: new GameElement("img/background.png", 0, 0, 800, 600, {sx: 320, sy: 2280}),
-        towerOverlay: new GameElement("img/towers.png", 0, 0, 800, 600, {sx: 320, sy: 2280}),
-        addObject: function(object) {
-            Game.elements.push(object);
-            Game.graphics.addElement(object.element);
-        },
-        update: function() {
-            for (var i = 0; i < Game.elements.length; i++) {
-                Game.elements[i].update();
-            }
-            updateHUD();
+    // Game update function
+    Game.update = function() {
+        for (var i = 0; i < Game.elements.length; i++) {
+            Game.elements[i].update();
         }
+        Game.updateHUD();
+    };
+    Game.updateHUD = function() {
+        jQuery(".health").html(player.health);
+        jQuery(".points").html(player.points);
     };
 
+    // graphics initialization
+    Game.graphics = new Graphics(jQuery(".playingfield"));
     Game.graphics.addElement(Game.background);
     Game.graphics.addElement(Game.towerOverlay, {alwaysOnTop: true});
 
-    for (var i = 0; i < gates.length; i++) {
-        Game.graphics.addElement(gates[i].element);
+    for (var i = 0; i < Game.gates.length; i++) {
+        Game.addObject(Game.gates[i]);
     }
 
     // player logic
     function Player() {
         this.health = 100;
         this.points = 0;
-        this.element = new GameElement("img/player.gif", 350, 250, 50, 50);
+        this.element = Game.playerElement;
         this.speed = 6;
         this.lastClickedAt = {x: 0, y: 0};
         this.target = {x: this.getMapPosX(), y: this.getMapPosY()};
@@ -82,18 +78,18 @@ jQuery(function() {
 
     Player.prototype.move = function(xDelta, yDelta) {
         // TODO also check that player can walk through an open door
-        var isWalkable = false;
         var xNew = this.getMapPosX() + xDelta,
-            yNew = this.getMapPosY() + yDelta;
-        for (var i = walkableArea.length - 1; i >= 0; i--) {
-            var wx1 = walkableArea[i].x;
-            var wy1 = walkableArea[i].y;
-            var wx2 = wx1 + walkableArea[i].width;
-            var wy2 = wy1 + walkableArea[i].height;
+            yNew = this.getMapPosY() + yDelta,
+            xTile = Math.floor((xNew - 10) / Game.tileSize),
+            yTile = Math.floor((yNew) / Game.tileSize);
+        console.log("Checking: " + xTile + "/" + yTile);
+        var isWalkable = walkableMap[yTile].charAt(xTile) == 'x';
 
-            // check whether target is inside area
-            if (xNew > wx1 && xNew < wx2 && yNew > wy1 && yNew < wy2) {
-                isWalkable = true;
+        // check gates
+        for (var i = 0; i < Game.gates.length; i++) {
+            // check that the middle of the player does not hit this gate
+            if (Game.gates[i].hitTest(xNew + this.element.width/2, yNew + this.element.height/2)) {
+                isWalkable = false;
                 break;
             }
         }
@@ -101,8 +97,8 @@ jQuery(function() {
         if (isWalkable) {
             Game.background.translate(xDelta, yDelta);
             Game.towerOverlay.translate(xDelta, yDelta);
-            for (i = 0; i < gates.length; i++) {
-                gates[i].element.move(-xDelta, -yDelta);
+            for (i = 0; i < Game.gates.length; i++) {
+                Game.gates[i].element.move(-xDelta, -yDelta);
             }
             //this.element.move(xDelta, yDelta);
         }
@@ -113,12 +109,10 @@ jQuery(function() {
 
 
     // debug functions ... have to be updated to still be valid
-    function openGate(id) {
-        jQuery("#" + id).hide('slow', function() {
-            jQuery(this).removeClass("gate-closed").addClass("gate-open").show();
-            gates[id].open = true;
-        });
-    }
+    jQuery(".debug_open_gate").bind('click', function() {
+        Game.gates[0].open();
+        return false;
+    });
 
     function closeGate(id) {
         gates[id].open = false;
@@ -133,13 +127,8 @@ jQuery(function() {
 
     Spider.prototype.attack = function() {
         player.health -= 5;
-        updateHUD();
+        Game.updateHUD();
     };
-
-    function updateHUD() {
-        jQuery(".health").html(player.health);
-        jQuery(".points").html(player.points);
-    }
 
     /*
      * Main game loop, first taken from:
