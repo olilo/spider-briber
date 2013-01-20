@@ -77,7 +77,6 @@ jQuery(function() {
     };
 
     Player.prototype.move = function(xDelta, yDelta) {
-        // TODO also check that player can walk through an open door
         var xNew = this.getMapPosX() + xDelta,
             yNew = this.getMapPosY() + yDelta,
             xTile = Math.floor((xNew - 10) / Game.tileSize),

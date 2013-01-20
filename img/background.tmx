@@ -8,15 +8,15 @@
  </tileset>
  <layer name="Boden" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2tFq2zAUgGH7gTLnxnVuuvXht/daCjEoZ8dWXKRi2PeBKGmgF/pRZcseBgAAAAAAAAAAAAAAAAAAAAAAAIB9f75xUGfOzuVIj8s4DD8egz6yHp/zPt3HtZj/z7H2eNOkm1qP62P+34ou62fay3pMoUfZZBr//Z52aj1uYe6Xx4i9XhnUZT2WZA2UbcpWRwZ1scclWQO3ZH1kc7yMz0OD47Z63JIeU/Gd+e4j67G1RpaNHu7L29nrEdfI+ruLHt3ocS61HvHadt1L9Ojjlf0ju8bVo49aj7iv28/7inM3j89NpmSNxPsLPdrZOk9czxTjGonrJPsbenzdVo85ud8om+jRx+9hv0d5/hTPQq56NJf1mMfnke3xN+uji60e5fOm2Cc+i9KjnazHUXq0U+uxPjPfex6oRztHe2Rn7Hq0c7THhx5dbV3vlqPsET8Pgx4txR7rfMefenyPrEe5Ltbr2/LZhx79ZD3K+4z3+/h5H78ee4cefWU93pMO65lVtqfo0U7sMVfWxKxHV7FHtjbW90WXpIUebWU94trI/keVz9P1aKfWo/ZO7oceTdV6vPJOrh7tZPfnscneGAY9WnLefi56nIse56IHAAAA8L/4C9GFn4s=
+   eJzt2kFuwjAQQNHkQDRs0rBpy+V7r1IRC8/UAXtsmKj+T7Io7QJpfo2BMAwAAAAAAAAAAAAAAAAAAAAAAAAAAADD8J2x0FbOzGsXHotnVTtrOtX5Vj+3nrOe99b86XKV0+MVz2HslauWe4Azpo733Oly4z1rekjes6aF5D1vOkjec6eH5D13Wkjes6eF5D1/evzFzPalZY/DOAxv60I563PK79ynyzpG8/9docc7TUxa9Diu83+PuoT7KGPtMakecZNp/Pt35GnR46Rmv6xL98pZvbP2WBJ7IG4TtypZvbP0OCT2wCmxP1IzXka5aCDV9DglekzR35i3jaXH1h5ZNnrwHjNfTQ+9R8LvDvQwo8e+1PbQr23DWUIPmxbnR+o1bkkPOt3U9tDnuuU832rRY5PSOc2jbDIl9oh+f2HdH/TIm0/oMSX2iN4nlsegR3mPOfF+I27SqkdvTWp7xJ8/6c9CjvQoZpnNPMqVOuNP7A8Ta4/4epPuo69FWRvQ4zn/q7U9empS2yNcM793PbCmR3z737V4Ltc9Up+xc37keUaPMz3MrLM5jHLFPfR96+PQI2+FeevbZ/XoibVHvC/C69v42gc9bKw94vcZH5f1eVlf69lBDztrj49Eh/CZVepMoUMey5zmB3tipoeZZU6pvRG+L7okWtAjn7WH3hup56j4ejo98tX2ePSd3DM9itT2yPlOLi3yWWalm9xb1sfo1StmRY989NgXeuwLPfaldFavWD3znj1NJO+500PynjstJO/Z00Tynjs9JO+500PynjstJO/Z02Obd4eee/wA8oWUkQ==
   </data>
  </layer>
  <layer name="Boden-Fluff" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt0bEJgFAQRMH7NWimmWZatiVYoGsVnjADmy+8KgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPi3K5tG1Ty+fsLrzpa0WPVoY0uLXY82jrQ49QAAAAAAAIDWHm0PAl0=
+   eJzt0bERQFAURNGnBjIyMspWgirogGY8iQqY/4NzZjbfmRsBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPCvPXeUPsHrzF2lTwAAAAB8bM21TUTXlH7CY8v12WLQoxpjtpj0qMacLRY9AAAAAAAAoGo3t/IFpw==
   </data>
  </layer>
- <layer name="Mauern" width="100" height="100">
+ <layer name="Mauern" width="100" height="100" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt260OwjAUBtBaHoUn4EcADoIAHAQBOAjv/wDUkMAysS3bWtg5yafuxM1q2ps2BAAAAAAAAAAAAAAAAAAAAAAAAACgTePUDfDl1FFoxnrk5dFRAOCT/XFephVDP+x382I98uL8AQDALxm1/B38k6rzQXPEfhTnHIuYZcyqpEb3iv98F7OPOZTU6F5x7nSJucbcSmoAAAD8D/NdIHeTmFmNvO+BzlM0OwDr8D273YRq9w63KZodgGOo9/7svV7nFM0OwD00e4f2TNEsAAAAQE0vtRVE/w==
   </data>
@@ -29,6 +29,11 @@
  <layer name="Turm" width="100" height="100">
   <data encoding="base64" compression="zlib">
    eJzt20EKglAUhtE3i1ZQtoGonbSE9r+RbCA4kPBaL//BOXBHTsQP8XHB1gAAAAAAAAAAAAAAAAAAAAAAAADWO4xz7DjUnMY5dxxqph6XcW4dhpp5D/anRxY9suiRpdqjej6mptqjej6m5v18h1bvsfZ8TM03Pfg9PbLokUWPLHpk2Xre1aMPPbLokUWPLHpkmT/faQf4WJjpmh59VfeDQ9Ojp6X94HNhpmvej758P7LokUWPLHpk0SOLHln0yKJHFj2y6JFFjyxL+91Po0df9rtZrm3bf0/3PW4WAAAAAAD+4AW2ciMx
+  </data>
+ </layer>
+ <layer name="Begehbarer Weg" width="100" height="100" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJzt1rENwCAQBEFowf0X65yAwLL0G8xINHAbPGsBAAAAAAAAAAAAAAAAAAAAAAAAAABQ8Oz/H9/p0aJHi31b9GjRo0WPFj1a9GjRo0WPFj1a9GjRo0WPLg1a9GjRo0WPFj3m+V+16NGiR4seLefeeszSo+XcXI9ZerS45wAAAAAAANy8IrsTFA==
   </data>
  </layer>
 </map>
