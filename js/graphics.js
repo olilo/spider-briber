@@ -67,7 +67,6 @@ Graphics.prototype.addElement = function(element, attrs)  {
         element.canvasImg = img;
         // TODO add listener for image loaded
     } else {
-        // TODO better with a div and set background-url
         var span = document.createElement("span");
         span.id = "element" + (this.elements.length - 1);
         span.style.position = "absolute";
