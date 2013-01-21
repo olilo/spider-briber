@@ -10,18 +10,16 @@ Through causes that have yet to be determined the spiders are susceptible to bri
 and so you can throw money at them to fend them off.
 The game ends when you reach your weapon stash.
 
-For now the whole "HTML5" part is in name only, because I don't really use any
-features of HTML5 yet. But they will surely come (like sound, or using a canvas).
-
 ## Playable version
 
 Here is a github-hosted preview: http://olilo.github.com/spider-briber/
 
+There's not much yet to do except walk and manually open a gate.
+
 ## Screenshots
 
-Lo and behold, a first screenshot (well, only the background is done for now):
-
-![First screenshot](https://raw.github.com/olilo/spider-briber/master/img/screenshots/spider_briber_background1.png)
+![First screenshot](https://raw.github.com/olilo/spider-briber/master/img/screenshots/spider_briber_1.png)
+![In door](https://raw.github.com/olilo/spider-briber/master/img/screenshots/spider_briber_2.png)
 
 ## Used tilesets
 
