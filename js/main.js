@@ -24,6 +24,7 @@ jQuery(function() {
     function Player() {
         this.health = 100;
         this.points = 0;
+        this.money = 1000;
         this.element = Game.playerElement;
         this.speed = 6;
         this.lastClickedAt = {x: 0, y: 0};
@@ -71,7 +72,7 @@ jQuery(function() {
         }
 
         if (increment.x != 0 || increment.y != 0) {
-            console.log("Moving player by: " + increment.x + "/" + increment.y);
+            //console.log("Moving player by: " + increment.x + "/" + increment.y);
             this.move(increment.x, increment.y);
         }
     };
@@ -81,7 +82,7 @@ jQuery(function() {
             yNew = this.getMapPosY() + yDelta,
             xTile = Math.floor((xNew - 10) / Game.tileSize),
             yTile = Math.floor((yNew) / Game.tileSize);
-        console.log("Checking: " + xTile + "/" + yTile);
+        //console.log("Checking: " + xTile + "/" + yTile);
         var isWalkable = walkableMap[yTile].charAt(xTile) == 'x';
 
         // check gates
@@ -107,27 +108,80 @@ jQuery(function() {
     Game.addObject(player);
 
 
+    // spiders ...
+    function Spider(xTile, yTile) {
+        this.x = xTile * 32;
+        this.y = yTile * 32;
+        var elemX = - Game.background.sx + this.x;
+        var elemY = - Game.background.sy + this.y;
+        this.element = new GameElement(Game.spiderSprite, elemX, elemY, Game.spiderWidth, Game.spiderHeight, {sx: 45, sy: 66});
+        this.health = 20;
+        this.bribed = false;
+    }
+
+    Spider.prototype.getMapPosX = function() {
+        return Game.background.sx + this.element.x;
+    };
+
+    Spider.prototype.getMapPosY = function() {
+        return Game.background.sy + this.element.y;
+    };
+
+    Spider.prototype.update = function() {
+        // reposition spider relative to background
+        this.element.x = - Game.background.sx + this.x;
+        this.element.y = - Game.background.sy + this.y;
+
+        // turn to player
+        var orientation = -1, // 0 - left; 1 - top-left; 2 - top; 3 - top-right ...
+            turnThreshold = 45,
+            distanceX = player.getMapPosX() - this.x,
+            distanceY = player.getMapPosY() - this.y;
+
+        if (distanceX < -turnThreshold && Math.abs(distanceY) <= turnThreshold) {
+            orientation = 0;
+        } else if (distanceX < -turnThreshold && distanceY < -turnThreshold) {
+            orientation = 1;
+        } else if (Math.abs(distanceX) <= turnThreshold && distanceY < -turnThreshold) {
+            orientation = 2;
+        } else if (distanceX > turnThreshold && distanceY < -turnThreshold) {
+            orientation = 3;
+        } else if (distanceX > turnThreshold && Math.abs(distanceY) <= turnThreshold) {
+            orientation = 4;
+        } else if (distanceX > turnThreshold && distanceY > turnThreshold) {
+            orientation = 5;
+        } else if (Math.abs(distanceX) <= turnThreshold && distanceY > turnThreshold) {
+            orientation = 6;
+        } else if (distanceX < -turnThreshold && distanceY > turnThreshold) {
+            orientation = 7;
+        } else {
+            console.log("HALP: Unknown state for orientation!!");
+        }
+
+        console.log(distanceX + " - " + distanceY + ": " + orientation);
+
+        if (orientation > -1) {
+            this.element.sy = orientation * 128 + 66;
+        }
+
+        // TODO simple AI: if player is in close (like, 3 tiles away), walk towards him and pursue him
+        // TODO if bribed: go away into a corner and don't act for some time (10 seconds?)
+    };
+
+    Spider.prototype.attack = function() {
+        player.health -= 5;
+        Game.updateHUD();
+    };
+
+    Game.addObject(new Spider(16, 75));
+
+
     // debug functions ... have to be updated to still be valid
     jQuery(".debug_open_gate").bind('click', function() {
         Game.gates[0].open();
         return false;
     });
 
-    function closeGate(id) {
-        gates[id].open = false;
-        jQuery("#" + id).hide().removeClass("gate-open").addClass("gate-closed").show('slow');
-    }
-
-
-    function Spider() {
-        this.health = 20;
-        this.bribed = false;
-    }
-
-    Spider.prototype.attack = function() {
-        player.health -= 5;
-        Game.updateHUD();
-    };
 
     /*
      * Main game loop, first taken from:
@@ -143,6 +197,12 @@ jQuery(function() {
 
         return function() {
             loops = 0;
+
+            // quickfix for that tab change problem: crop all updates if time difference is > 10 seconds
+            if ((new Date).getTime() - nextGameTick > 10000) {
+                nextGameTick = (new Date).getTime();
+                console.log("More than 10sec difference between updates: Skipped all updates inbetween");
+            }
 
             while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
                 Game.update();

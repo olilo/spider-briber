@@ -7,6 +7,8 @@ var Game = {
     towerOverlay: new GameElement("img/towers.png", 0, 0, 800, 600, {sx: 280, sy: 2320}),
     playerElement: new GameElement("img/player.gif", 350, 250, 50, 50),
     spiderSprite: "img/spider_0.png",
+    spiderWidth: 45,
+    spiderHeight: 45,
     addObject: function(object) {
         Game.elements.push(object);
         Game.graphics.addElement(object.element);
