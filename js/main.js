@@ -26,7 +26,7 @@ jQuery(function() {
         this.points = 0;
         this.money = 1000;
         this.element = Game.playerElement;
-        this.speed = 6;
+        this.speed = Game.playerSpeed;
         this.lastClickedAt = {x: 0, y: 0};
         this.target = {x: this.getMapPosX(), y: this.getMapPosY()};
         this.moneyTarget = {x: 0, y: 0};
@@ -78,29 +78,16 @@ jQuery(function() {
     };
 
     Player.prototype.move = function(xDelta, yDelta) {
-        var xNew = this.getMapPosX() + xDelta,
-            yNew = this.getMapPosY() + yDelta,
-            xTile = Math.floor((xNew - 10) / Game.tileSize),
-            yTile = Math.floor((yNew) / Game.tileSize);
-        //console.log("Checking: " + xTile + "/" + yTile);
-        var isWalkable = walkableMap[yTile].charAt(xTile) == 'x';
+        var xDeltaOriginal = xDelta;
+        if (Game.checkMovable(this.element, xDelta, yDelta) ||
+            Game.checkMovable(this.element, xDelta = 0, yDelta) ||
+            Game.checkMovable(this.element, xDelta = xDeltaOriginal, yDelta = 0)) {
 
-        // check gates
-        for (var i = 0; i < Game.gates.length; i++) {
-            // check that the middle of the player does not hit this gate
-            if (Game.gates[i].hitTest(xNew + this.element.width/2, yNew + this.element.height/2)) {
-                isWalkable = false;
-                break;
-            }
-        }
-
-        if (isWalkable) {
             Game.background.translate(xDelta, yDelta);
             Game.towerOverlay.translate(xDelta, yDelta);
             for (i = 0; i < Game.gates.length; i++) {
                 Game.gates[i].element.move(-xDelta, -yDelta);
             }
-            //this.element.move(xDelta, yDelta);
         }
     };
 
@@ -110,13 +97,16 @@ jQuery(function() {
 
     // spiders ...
     function Spider(xTile, yTile) {
-        this.x = xTile * 32;
-        this.y = yTile * 32;
+        this.x = xTile * Game.tileSize;
+        this.y = yTile * Game.tileSize;
+        this.speed = Game.spiderSpeed;
         var elemX = - Game.background.sx + this.x;
         var elemY = - Game.background.sy + this.y;
         this.element = new GameElement(Game.spiderSprite, elemX, elemY, Game.spiderWidth, Game.spiderHeight, {sx: 45, sy: 66});
+        this.animationCounter = 0;
         this.health = 20;
         this.bribed = false;
+        this.spottedPlayer = false;
     }
 
     Spider.prototype.getMapPosX = function() {
@@ -135,41 +125,76 @@ jQuery(function() {
         // turn to player
         var orientation = -1, // 0 - left; 1 - top-left; 2 - top; 3 - top-right ...
             turnThreshold = 45,
-            distanceX = player.getMapPosX() - this.x,
-            distanceY = player.getMapPosY() - this.y;
+            xDistance = player.getMapPosX() - this.x,
+            yDistance = player.getMapPosY() - this.y,
+            xDelta = 0,
+            yDelta = 0;
 
-        if (distanceX < -turnThreshold && Math.abs(distanceY) <= turnThreshold) {
+        this.animationCounter++;
+
+        // find out orientation
+        if (xDistance < -turnThreshold && Math.abs(yDistance) <= turnThreshold) {
             orientation = 0;
-        } else if (distanceX < -turnThreshold && distanceY < -turnThreshold) {
+        } else if (xDistance < -turnThreshold && yDistance < -turnThreshold) {
             orientation = 1;
-        } else if (Math.abs(distanceX) <= turnThreshold && distanceY < -turnThreshold) {
+        } else if (Math.abs(xDistance) <= turnThreshold && yDistance < -turnThreshold) {
             orientation = 2;
-        } else if (distanceX > turnThreshold && distanceY < -turnThreshold) {
+        } else if (xDistance > turnThreshold && yDistance < -turnThreshold) {
             orientation = 3;
-        } else if (distanceX > turnThreshold && Math.abs(distanceY) <= turnThreshold) {
+        } else if (xDistance > turnThreshold && Math.abs(yDistance) <= turnThreshold) {
             orientation = 4;
-        } else if (distanceX > turnThreshold && distanceY > turnThreshold) {
+        } else if (xDistance > turnThreshold && yDistance > turnThreshold) {
             orientation = 5;
-        } else if (Math.abs(distanceX) <= turnThreshold && distanceY > turnThreshold) {
+        } else if (Math.abs(xDistance) <= turnThreshold && yDistance > turnThreshold) {
             orientation = 6;
-        } else if (distanceX < -turnThreshold && distanceY > turnThreshold) {
+        } else if (xDistance < -turnThreshold && yDistance > turnThreshold) {
             orientation = 7;
         } else {
             console.log("HALP: Unknown state for orientation!!");
         }
 
-        console.log(distanceX + " - " + distanceY + ": " + orientation);
-
-        if (orientation > -1) {
-            this.element.sy = orientation * 128 + 66;
+        /* simple AI: if player is in close (like, 4 tiles away), walk towards him and try to attack him
+         *            we only let go if the player walks out of the visible screen area
+         */
+        var absDistance = Math.max(Math.abs(xDistance), Math.abs(yDistance));
+        if (absDistance <= Game.tileSize) {
+            this.attack();
+            if (orientation > -1) {
+                this.element.sy = orientation * 128 + 64;
+            }
+            this.element.sx = Math.floor((this.animationCounter % 32) / 8) * 128 + 28 * 128 + 42;
+        } else if (absDistance <= Game.tileSize * 5 || absDistance <= Game.tileSize * 12 && this.spottedPlayer) {
+            xDelta = xDistance < -turnThreshold/2 ? -this.speed : xDistance > turnThreshold/2 ? this.speed : 0;
+            yDelta = yDistance < -turnThreshold/2 ? -this.speed : yDistance > turnThreshold/2 ? this.speed : 0;
+            this.spottedPlayer = true;
+            this.move(xDelta, yDelta);
+            if (orientation > -1) {
+                this.element.sy = orientation * 128 + 64;
+            }
+            this.element.sx = Math.floor((this.animationCounter % 32) / 4) * 128 + 4 * 128 + 42;
+        } else {
+            this.spottedPlayer = false;
+            this.element.sx = Math.floor((this.animationCounter % 32) / 8) * 128 + 42;
         }
 
-        // TODO simple AI: if player is in close (like, 3 tiles away), walk towards him and pursue him
-        // TODO if bribed: go away into a corner and don't act for some time (10 seconds?)
+        // TODO if bribed: go away into a corner and don't act for some time (10 seconds? 20 seconds?)
+    };
+
+    Spider.prototype.move = function(xDelta, yDelta) {
+        var xDeltaOriginal = xDelta;
+        if (Game.checkMovable(this.element, xDelta, yDelta) ||
+            Game.checkMovable(this.element, xDelta = 0, yDelta) ||
+            Game.checkMovable(this.element, xDelta = xDeltaOriginal, yDelta = 0)) {
+
+            this.x += xDelta;
+            this.y += yDelta;
+        }
     };
 
     Spider.prototype.attack = function() {
-        player.health -= 5;
+        if (this.animationCounter % 32 == 0) {
+            player.health -= 5;
+        }
         Game.updateHUD();
     };
 
