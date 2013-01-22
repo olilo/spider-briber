@@ -7,8 +7,8 @@ jQuery(function() {
         Game.updateHUD();
     };
     Game.updateHUD = function() {
-        jQuery(".health").html(player.health);
-        jQuery(".points").html(player.points);
+        jQuery(".health").html(player.health).addClass(player.health <= 25 ? "health-low" : "");
+        jQuery(".money").html(player.money);
     };
 
     // graphics initialization
@@ -23,7 +23,6 @@ jQuery(function() {
     // player logic
     function Player() {
         this.health = 100;
-        this.points = 0;
         this.money = 1000;
         this.element = Game.playerElement;
         this.speed = Game.playerSpeed;
@@ -163,7 +162,7 @@ jQuery(function() {
                 this.element.sy = orientation * 128 + 64;
             }
             this.element.sx = Math.floor((this.animationCounter % 32) / 8) * 128 + 28 * 128 + 42;
-        } else if (absDistance <= Game.tileSize * 5 || absDistance <= Game.tileSize * 12 && this.spottedPlayer) {
+        } else if (absDistance <= Game.tileSize * 5 || absDistance <= Game.tileSize * 14 && this.spottedPlayer) {
             xDelta = xDistance < -turnThreshold/2 ? -this.speed : xDistance > turnThreshold/2 ? this.speed : 0;
             yDelta = yDistance < -turnThreshold/2 ? -this.speed : yDistance > turnThreshold/2 ? this.speed : 0;
             this.spottedPlayer = true;
@@ -198,7 +197,9 @@ jQuery(function() {
         Game.updateHUD();
     };
 
+    // add two debug spiders, one inside the room and one outside
     Game.addObject(new Spider(16, 75));
+    Game.addObject(new Spider(19, 64));
 
 
     // debug functions ... have to be updated to still be valid
