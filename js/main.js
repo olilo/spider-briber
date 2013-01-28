@@ -23,7 +23,7 @@ jQuery(function() {
     // player logic
     function Player() {
         this.health = 100;
-        this.money = 1000;
+        this.money = 10;
         this.element = Game.playerElement;
         this.speed = Game.playerSpeed;
         this.lastClickedAt = {x: 0, y: 0};
