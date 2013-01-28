@@ -40,7 +40,6 @@ jQuery(function() {
     };
 
     Player.prototype.update = function() {
-        // TODO decide whether: clicked on spider, typed on keyboard, etc.
         var increment = {x: 0, y: 0};
         if (keyPressed(keys.up)) increment.y = -this.speed;
         if (keyPressed(keys.down)) increment.y = this.speed;
@@ -62,6 +61,7 @@ jQuery(function() {
         }
 
         // move to clicked mouse position
+        // TODO decide whether: clicked on spider or on an open tile
         var targetDiffX = this.target.x - this.getMapPosX();
         var targetDiffY = this.target.y - this.getMapPosY();
         if (targetDiffX != 0 || targetDiffY != 0) {
@@ -224,7 +224,7 @@ jQuery(function() {
         return function() {
             loops = 0;
 
-            // quickfix for that tab change problem: crop all updates if time difference is > 10 seconds
+            // quickfix for that tab change problem: drop all updates if time difference is > 10 seconds
             if ((new Date).getTime() - nextGameTick > 10000) {
                 nextGameTick = (new Date).getTime();
                 console.log("More than 10sec difference between updates: Skipped all updates inbetween");
