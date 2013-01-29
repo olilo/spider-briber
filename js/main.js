@@ -13,6 +13,21 @@ jQuery(function() {
             Game.pausePressed = false;
         }
 
+        // win/lose conditions
+        if (Game.player.health <= 0) {
+            window.cancelAnimationFrame(Game.animationFrameId);
+            console.log("Lost");
+            jQuery(".lost").show();
+        }
+
+        if (Game.tileSize * 52 <= Game.player.getMapPosX() && Game.player.getMapPosX() <= Game.tileSize * 65 &&
+            Game.tileSize * 17 <= Game.player.getMapPosY() && Game.player.getMapPosY() <= Game.tileSize * 30) {
+
+            window.cancelAnimationFrame(Game.animationFrameId);
+            console.log("Won");
+            jQuery(".won").show();
+        }
+
         for (var i = 0; i < Game.elements.length; i++) {
             Game.elements[i].update();
         }
@@ -31,18 +46,14 @@ jQuery(function() {
         }
     };
     Game.updateHUD = function() {
-        jQuery(".health").html(player.health).addClass(player.health <= 25 ? "health-low" : "");
-        jQuery(".money").html(player.money);
+        jQuery(".health").html(Game.player.health).addClass(Game.player.health <= 25 ? "health-low" : "");
+        jQuery(".money").html(Game.player.money);
     };
 
-    // graphics initialization
+    jQuery(".lost").hide();
+    jQuery(".won").hide();
     Game.graphics = new Graphics(jQuery(".playingfield"));
-    Game.graphics.addElement(Game.background);
-    Game.graphics.addElement(Game.towerOverlay, {alwaysOnTop: true});
 
-    for (var i = 0; i < Game.gates.length; i++) {
-        Game.addObject(Game.gates[i]);
-    }
 
     // player logic
     function Player() {
@@ -119,6 +130,7 @@ jQuery(function() {
 
     Player.prototype.move = function(xDelta, yDelta) {
         var xDeltaOriginal = xDelta;
+        //noinspection JSUnusedAssignment
         if (Game.checkMovable(this.element, xDelta, yDelta) ||
             Game.checkMovable(this.element, xDelta = 0, yDelta) ||
             Game.checkMovable(this.element, xDelta = xDeltaOriginal, yDelta = 0)) {
@@ -130,9 +142,6 @@ jQuery(function() {
             }
         }
     };
-
-    var player = new Player();
-    Game.addObject(player);
 
 
     // spiders ...
@@ -166,8 +175,8 @@ jQuery(function() {
         // turn to player
         var orientation = -1, // 0 - left; 1 - top-left; 2 - top; 3 - top-right ...
             turnThreshold = 45,
-            xDistance = player.getMapPosX() - this.x,
-            yDistance = player.getMapPosY() - this.y,
+            xDistance = Game.player.getMapPosX() - this.x,
+            yDistance = Game.player.getMapPosY() - this.y,
             xDelta = 0,
             yDelta = 0;
 
@@ -244,17 +253,10 @@ jQuery(function() {
 
     Spider.prototype.attack = function() {
         if (this.animationCounter % 32 == 0) {
-            player.health -= 5;
+            Game.player.health -= Game.spiderAttack;
         }
         Game.updateHUD();
     };
-
-    // add two debug spiders, one inside the first room and one outside
-    Game.addObject(new Spider(16, 75));
-    Game.addObject(new Spider(19, 64));
-    Game.addObject(new Spider(18, 55));
-    Game.addObject(new Spider(30, 55));
-    Game.addObject(new Spider(40, 55));
 
 
     // debug functions
@@ -272,11 +274,12 @@ jQuery(function() {
      */
     // TODO if the user changes the tab then onEachFrame is not called anymore ... game should pause then
     (function(){
-        Game.loops = 0, Game.skipTicks = 1000 / Game.fps,
-            Game.maxFrameSkip = 10,
-            Game.nextGameTick = (new Date).getTime(),
-            Game.lastDrawnFps = (new Date).getTime(),
-            Game.currentFps = 0;
+        Game.loops = 0;
+        Game.skipTicks = 1000 / Game.fps;
+        Game.maxFrameSkip = 10;
+        Game.nextGameTick = (new Date).getTime();
+        Game.lastDrawnFps = (new Date).getTime();
+        Game.currentFps = 0;
     })();
 
     Game.tick = function() {
@@ -370,6 +373,38 @@ jQuery(function() {
         Game.tickSleeping();
     }
 
-    step();
+
+    // initialize function
+    Game.init = function() {
+        Game.resetData();
+
+        // graphics initialization
+        Game.graphics.reset();
+        Game.graphics.addElement(Game.background);
+        Game.graphics.addElement(Game.towerOverlay, {alwaysOnTop: true});
+
+        for (var i = 0; i < Game.gates.length; i++) {
+            Game.addObject(Game.gates[i]);
+        }
+
+        Game.player = new Player();
+        Game.addObject(Game.player);
+
+        // add spiders
+        Game.addObject(new Spider(16, 75));
+        Game.addObject(new Spider(19, 64));
+        Game.addObject(new Spider(18, 55));
+        Game.addObject(new Spider(30, 55));
+        Game.addObject(new Spider(40, 55));
+
+        jQuery(".health").removeClass("health-low");
+        jQuery(".lost").hide();
+        jQuery(".won").hide();
+
+        step();
+    };
+
+    Game.init();
+    jQuery(".playagain").bind('click', Game.init);
 
 });

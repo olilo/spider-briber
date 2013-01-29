@@ -54,6 +54,11 @@ function Graphics(container) {
     }
 }
 
+Graphics.prototype.reset = function() {
+    this.elements = [];
+    this.onTopElements = 0;
+};
+
 Graphics.prototype.addElement = function(element, attrs)  {
     if (attrs && attrs.alwaysOnTop) {
         this.onTopElements += 1;
@@ -65,6 +70,18 @@ Graphics.prototype.addElement = function(element, attrs)  {
         var img = new Image();
         img.src = element.url;
         element.canvasImg = img;
+        element.loaded = false;
+        jQuery(".loader").show();
+        var graphicsWrap = this;
+        img.onload = function() {
+            element.loaded = true;
+            for (var i = 0; i < graphicsWrap.elements.length; i++) {
+                if (!graphicsWrap.elements[i].loaded) {
+                    return;
+                }
+            }
+            jQuery(".loader").hide();
+        };
         // TODO add listener for image loaded
     } else {
         var span = document.createElement("span");

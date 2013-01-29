@@ -1,24 +1,17 @@
 var Game = {
     fps: 30,
     tileSize: 32,
-    elements: [],
     graphics: null,  // is initialized when site is loaded
-    background: new GameElement("img/background.png", 0, 0, 800, 600, {sx: 280, sy: 2320}),
-    towerOverlay: new GameElement("img/towers.png", 0, 0, 800, 600, {sx: 280, sy: 2320}),
-    playerElement: new GameElement("img/player.gif", 350, 250, 50, 50),
-    playerSpeed: 6,
     spiderSprite: "img/spider_0.png",
     spiderWidth: 45,
     spiderHeight: 45,
+    spiderAttack: 5,
     spiderSpeed: 1.3,
+    playerSpeed: 5,
     addObject: function(object) {
         Game.elements.push(object);
         Game.graphics.addElement(object.element);
     },
-    gates: [
-        new Gate(new GameElement("img/Castle_2.png", 328, -16, 96, 96, {sx: 320, sy: 96})),
-        new Gate(new GameElement("img/Castle_2.png", 1920, -1130, 96, 96, {sx: 320, sy: 96}))
-    ],
     checkMovable: function(element, xDelta, yDelta) {
         var xNew = Game.background.sx + element.x + xDelta,
             yNew = Game.background.sy + element.y + yDelta,
@@ -38,6 +31,17 @@ var Game = {
 
         return isWalkable;
     }
+};
+
+Game.resetData = function() {
+    this.elements = [];
+    this.background = new GameElement("img/background.png", 0, 0, 800, 600, {sx: 280, sy: 2320});
+    this.towerOverlay = new GameElement("img/towers.png", 0, 0, 800, 600, {sx: 280, sy: 2320});
+    this.playerElement = new GameElement("img/player.gif", 350, 250, 50, 50);
+    this.gates = [
+        new Gate(new GameElement("img/Castle_2.png", 328, -16, 96, 96, {sx: 320, sy: 96}))
+        //new Gate(new GameElement("img/Castle_2.png", 1920, -1130, 96, 96, {sx: 320, sy: 96}))
+    ];
 };
 
 

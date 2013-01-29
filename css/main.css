@@ -303,8 +303,7 @@ textarea {
  */
 
 .hud {
-    width: 800px;
-    margin: 10px auto 0;
+    margin: 10px;
     position: relative;
     font-size: 24px;
 }
@@ -329,13 +328,55 @@ textarea {
     color: red;
 }
 
+.wrapper {
+    width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
 .playingfield {
     width: 800px;
     height: 600px;
-    margin: 10px auto 0;
     padding: 0;
+    margin: 0;
     position: relative;
     border: 2px solid black;
     overflow: hidden;
     cursor: pointer;
+}
+
+.playingfield img.loader {
+    position: absolute;
+    left: 350px;
+    top: 250px;
+    z-index: 1;
+}
+
+.lost, .won {
+    font-size: 60px;
+    font-style: italic;
+    background: #696969;
+    padding: 15px;
+    color: #222222;
+    left: 90px;
+    top: 270px;
+    position: absolute;
+    z-index: 10;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+}
+
+.won {
+    font-size: 50px;
+    background: #228b22;
+    left: 50px;
+}
+
+.lost a:visited, .lost a {
+    color: blue;
+}
+
+.won a:visited, .won a {
+    color: blue;
 }
