@@ -28,7 +28,6 @@ jQuery(function() {
         this.speed = Game.playerSpeed;
         this.lastClickedAt = {x: 0, y: 0};
         this.target = {x: this.getMapPosX(), y: this.getMapPosY()};
-        this.moneyTarget = {x: 0, y: 0};
     }
 
     Player.prototype.getMapPosX = function() {
@@ -56,16 +55,34 @@ jQuery(function() {
         if (clickedAt.x != this.lastClickedAt.x || clickedAt.y != this.lastClickedAt.y) {
             this.lastClickedAt.x = clickedAt.x;
             this.lastClickedAt.y = clickedAt.y;
-            this.target.x = Game.background.sx + clickedAt.x - this.element.width / 2;
-            this.target.y = Game.background.sy + clickedAt.y - this.element.height / 2;
-        }
 
+            // if clicked on spider: bribe the spider
+            var clickedOnSpider = false;
+            for (var i = Game.elements.length - 1; i >= 0; i--) {
+                var elem = Game.elements[i].element;
+                if (Game.elements[i] instanceof Spider &&
+                    clickedAt.x >= elem.x && clickedAt.x <= elem.x + elem.width &&
+                    clickedAt.y >= elem.y && clickedAt.y <= elem.y + elem.height &&
+                    !Game.elements[i].bribed) {
+
+                    clickedOnSpider = true;
+                    Game.elements[i].bribed = true;
+                    Game.elements[i].bribedCountdown = Game.fps * 10;
+                    this.money--;
+                    break;
+                }
+            }
+
+            if (!clickedOnSpider) {
+                this.target.x = Game.background.sx + clickedAt.x - this.element.width / 2;
+                this.target.y = Game.background.sy + clickedAt.y - this.element.height / 2;
+            }
+        }
         // move to clicked mouse position
-        // TODO decide whether: clicked on spider or on an open tile
         var targetDiffX = this.target.x - this.getMapPosX();
         var targetDiffY = this.target.y - this.getMapPosY();
         if (targetDiffX != 0 || targetDiffY != 0) {
-            console.log(Math.min(targetDiffY, this.speed));
+            //console.log(Math.min(targetDiffY, this.speed));
             increment.x = Math.max(-this.speed, Math.min(targetDiffX, this.speed));
             increment.y = Math.max(-this.speed, Math.min(targetDiffY, this.speed));
         }
@@ -105,6 +122,7 @@ jQuery(function() {
         this.animationCounter = 0;
         this.health = 20;
         this.bribed = false;
+        this.bribedCountdown = 0;
         this.spottedPlayer = false;
     }
 
@@ -131,6 +149,10 @@ jQuery(function() {
 
         this.animationCounter++;
 
+        if (this.bribedCountdown-- < 0) {
+            this.bribed = false;
+        }
+
         // find out orientation
         if (xDistance < -turnThreshold && Math.abs(yDistance) <= turnThreshold) {
             orientation = 0;
@@ -156,7 +178,7 @@ jQuery(function() {
          *            we only let go if the player walks out of the visible screen area
          */
         var absDistance = Math.max(Math.abs(xDistance), Math.abs(yDistance));
-        if (absDistance <= Game.tileSize) {
+        if (absDistance <= Game.tileSize && !this.bribed) {
             this.attack();
             if (orientation > -1) {
                 this.element.sy = orientation * 128 + 64;
@@ -166,6 +188,14 @@ jQuery(function() {
             xDelta = xDistance < -turnThreshold/2 ? -this.speed : xDistance > turnThreshold/2 ? this.speed : 0;
             yDelta = yDistance < -turnThreshold/2 ? -this.speed : yDistance > turnThreshold/2 ? this.speed : 0;
             this.spottedPlayer = true;
+
+            // reverse move direction and orientation if bribed
+            if (this.bribed) {
+                xDelta = -xDelta;
+                yDelta = -yDelta;
+                orientation = (orientation + 4) % 8;
+            }
+
             this.move(xDelta, yDelta);
             if (orientation > -1) {
                 this.element.sy = orientation * 128 + 64;
@@ -175,8 +205,6 @@ jQuery(function() {
             this.spottedPlayer = false;
             this.element.sx = Math.floor((this.animationCounter % 32) / 8) * 128 + 42;
         }
-
-        // TODO if bribed: go away into a corner and don't act for some time (10 seconds? 20 seconds?)
     };
 
     Spider.prototype.move = function(xDelta, yDelta) {
@@ -197,12 +225,15 @@ jQuery(function() {
         Game.updateHUD();
     };
 
-    // add two debug spiders, one inside the room and one outside
+    // add two debug spiders, one inside the first room and one outside
     Game.addObject(new Spider(16, 75));
     Game.addObject(new Spider(19, 64));
+    Game.addObject(new Spider(18, 55));
+    Game.addObject(new Spider(30, 55));
+    Game.addObject(new Spider(40, 55));
 
 
-    // debug functions ... have to be updated to still be valid
+    // debug functions
     jQuery(".debug_open_gate").bind('click', function() {
         Game.gates[0].open();
         return false;
@@ -215,22 +246,25 @@ jQuery(function() {
      * then adjusted like outlined here:
      * http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
      */
-    // TODO if the player changes the tab then onEachFrame is not called anymore ... game should pause then
+    // TODO if the user changes the tab then onEachFrame is not called anymore ... game should pause then
     Game.run = function(){
         var loops = 0, skipTicks = 1000 / Game.fps,
             maxFrameSkip = 10,
-            nextGameTick = (new Date).getTime();
+            nextGameTick = (new Date).getTime(),
+            lastDrawnFps = (new Date).getTime(),
+            currentFps = 0;
 
         return function() {
             loops = 0;
+            var time = (new Date).getTime();
 
             // quickfix for that tab change problem: drop all updates if time difference is > 10 seconds
-            if ((new Date).getTime() - nextGameTick > 10000) {
-                nextGameTick = (new Date).getTime();
+            if (time - nextGameTick > 10000) {
+                nextGameTick = time;
                 console.log("More than 10sec difference between updates: Skipped all updates inbetween");
             }
 
-            while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
+            while (time > nextGameTick && loops < maxFrameSkip) {
                 Game.update();
                 nextGameTick += skipTicks;
                 loops++;
@@ -239,6 +273,13 @@ jQuery(function() {
             if (loops) {
                 Game.graphics.redraw();
                 if (loops > 1) console.log("Skipped frames: " + (loops - 1));
+                currentFps++;
+            }
+
+            if (time - lastDrawnFps > 1000) {
+                lastDrawnFps = time;
+                jQuery(".fps").html(currentFps);
+                currentFps = 0;
             }
         };
     };
