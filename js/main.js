@@ -1,10 +1,34 @@
 jQuery(function() {
     // Game update function
     Game.update = function() {
+        if (keyPressed(keys.pause)) {
+            if (!Game.pausePressed) {
+                window.cancelAnimationFrame(Game.animationFrameId);
+                console.log("Paused");
+                stepSleeping();
+                Game.pausePressed = true;
+                return;
+            }
+        } else {
+            Game.pausePressed = false;
+        }
+
         for (var i = 0; i < Game.elements.length; i++) {
             Game.elements[i].update();
         }
         Game.updateHUD();
+    };
+    Game.updateSleeping = function() {
+        if (keyPressed(keys.pause)) {
+            if (!Game.pausePressed) {
+                window.cancelAnimationFrame(Game.sleepingFrameId);
+                step();
+                Game.nextGameTick = (new Date).getTime() + 200;
+                Game.pausePressed = true;
+            }
+        } else {
+            Game.pausePressed = false;
+        }
     };
     Game.updateHUD = function() {
         jQuery(".health").html(player.health).addClass(player.health <= 25 ? "health-low" : "");
@@ -247,67 +271,105 @@ jQuery(function() {
      * http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
      */
     // TODO if the user changes the tab then onEachFrame is not called anymore ... game should pause then
-    Game.run = function(){
-        var loops = 0, skipTicks = 1000 / Game.fps,
-            maxFrameSkip = 10,
-            nextGameTick = (new Date).getTime(),
-            lastDrawnFps = (new Date).getTime(),
-            currentFps = 0;
+    (function(){
+        Game.loops = 0, Game.skipTicks = 1000 / Game.fps,
+            Game.maxFrameSkip = 10,
+            Game.nextGameTick = (new Date).getTime(),
+            Game.lastDrawnFps = (new Date).getTime(),
+            Game.currentFps = 0;
+    })();
 
-        return function() {
-            loops = 0;
-            var time = (new Date).getTime();
+    Game.tick = function() {
+        Game.loops = 0;
+        var time = (new Date).getTime();
 
-            // quickfix for that tab change problem: drop all updates if time difference is > 10 seconds
-            if (time - nextGameTick > 10000) {
-                nextGameTick = time;
-                console.log("More than 10sec difference between updates: Skipped all updates inbetween");
-            }
+        // quickfix for that tab change problem: drop all updates if time difference is > 10 seconds
+        if (time - Game.nextGameTick > 10000) {
+            Game.nextGameTick = time;
+            console.log("More than 10sec difference between updates: Skipped all updates inbetween");
+        }
 
-            while (time > nextGameTick && loops < maxFrameSkip) {
-                Game.update();
-                nextGameTick += skipTicks;
-                loops++;
-            }
+        while (time > Game.nextGameTick && Game.loops < Game.maxFrameSkip) {
+            Game.update();
+            Game.nextGameTick += Game.skipTicks;
+            Game.loops++;
+        }
 
-            if (loops) {
-                Game.graphics.redraw();
-                if (loops > 1) console.log("Skipped frames: " + (loops - 1));
-                currentFps++;
-            }
+        if (Game.loops) {
+            Game.graphics.redraw();
+            if (Game.loops > 1) console.log("Skipped frames: " + (Game.loops - 1));
+            Game.currentFps++;
+        }
 
-            if (time - lastDrawnFps > 1000) {
-                lastDrawnFps = time;
-                jQuery(".fps").html(currentFps);
-                currentFps = 0;
-            }
-        };
+        if (time - Game.lastDrawnFps > 1000) {
+            Game.lastDrawnFps = time;
+            jQuery(".fps").html(Game.currentFps);
+            Game.currentFps = 0;
+        }
+    };
+
+    Game.tickSleeping = function() {
+        Game.loops = 0;
+        var time = (new Date).getTime();
+
+        // quickfix for that tab change problem: drop all updates if time difference is > 10 seconds
+        if (time - Game.nextGameTick > 10000) {
+            Game.nextGameTick = time;
+            console.log("More than 10sec difference between updates: Skipped all updates inbetween");
+        }
+
+        while (time > Game.nextGameTick && Game.loops < Game.maxFrameSkip) {
+            Game.updateSleeping();
+            Game.nextGameTick += Game.skipTicks;
+            Game.loops++;
+        }
+
+        if (Game.loops) {
+            Game.currentFps++;
+        }
+
+        if (time - Game.lastDrawnFps > 1000) {
+            Game.lastDrawnFps = time;
+            jQuery(".fps").html(Game.currentFps);
+            Game.currentFps = 0;
+        }
     };
 
     (function() {
-        var onEachFrame;
-        if (window.webkitRequestAnimationFrame) {
-            console.log("webkitRequestAnimationFrame present, using it");
-            onEachFrame = function(cb) {
-                var _cb = function() { cb(); webkitRequestAnimationFrame(_cb); };
-                _cb();
-            };
-        } else if (window.mozRequestAnimationFrame) {
-            console.log("mozRequestAnimationFrame present, using it");
-            onEachFrame = function(cb) {
-                var _cb = function() { cb(); mozRequestAnimationFrame(_cb); };
-                _cb();
-            };
-        } else {
-            console.log("Fallback to setInterval");
-            onEachFrame = function(cb) {
-                setInterval(cb, 1000 / 60);
-            }
+        var lastTime = 0;
+        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+            window.cancelAnimationFrame =
+              window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
         }
 
-        window.onEachFrame = onEachFrame;
-    })();
+        if (!window.requestAnimationFrame)
+            window.requestAnimationFrame = function(callback, element) {
+                var currTime = new Date().getTime();
+                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+                  timeToCall);
+                lastTime = currTime + timeToCall;
+                return id;
+            };
 
-    window.onEachFrame(Game.run());
+        if (!window.cancelAnimationFrame)
+            window.cancelAnimationFrame = function(id) {
+                clearTimeout(id);
+            };
+    }());
+
+    function step() {
+        Game.animationFrameId = window.requestAnimationFrame(step);
+        Game.tick();
+    }
+
+    function stepSleeping() {
+        Game.sleepingFrameId = window.requestAnimationFrame(stepSleeping);
+        Game.tickSleeping();
+    }
+
+    step();
 
 });

@@ -41,6 +41,10 @@ jQuery("body").bind('keydown', function(e) {
             // down arrow or 's'
             keyToAdd = keys.down;
             break;
+        case 19:
+        case 80:
+            keyToAdd = keys.pause;
+            break;
         default:
             // no recognized keyboard shortcut
             break;
@@ -70,6 +74,10 @@ jQuery("body").bind('keydown', function(e) {
         case 83:
             // down arrow or 's'
             keyToRemove = keys.down;
+            break;
+        case 19:
+        case 80:
+            keyToRemove = keys.pause;
             break;
         default:
             // nothing to do here ...
