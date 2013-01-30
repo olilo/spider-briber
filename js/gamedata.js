@@ -42,7 +42,16 @@ Game.resetData = function() {
     this.playerElement = new GameElement("img/player.gif", 350, 250, 50, 50);
     this.gates = [
         new Gate(new GameElement("img/Castle_2.png", 328, -16, 96, 96, {sx: 320, sy: 96}))
-        //new Gate(new GameElement("img/Castle_2.png", 1920, -1130, 96, 96, {sx: 320, sy: 96}))
+        //new Gate(new GameElement("img/Castle_2.png", 1928, -1136, 96, 96, {sx: 320, sy: 96}))
+    ];
+    this.gateOpener = [
+        {
+            x: 55 * Game.tileSize,
+            y: 55 * Game.tileSize,
+            width: Game.tileSize,
+            height: Game.tileSize,
+            opens: 1
+        }
     ];
 };
 
