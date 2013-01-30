@@ -302,6 +302,10 @@ textarea {
  * Game styles ...
  */
 
+h1 {
+    text-align: center;
+}
+
 .hud {
     margin: 10px;
     position: relative;
@@ -325,6 +329,10 @@ textarea {
 }
 
 .health-low {
+    color: red;
+}
+
+.money-low {
     color: red;
 }
 

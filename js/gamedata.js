@@ -2,12 +2,14 @@ var Game = {
     fps: 30,
     tileSize: 32,
     graphics: null,  // is initialized when site is loaded
+    randomSpiders: 15,
     spiderSprite: "img/spider_0.png",
     spiderWidth: 45,
     spiderHeight: 45,
     spiderAttack: 5,
     spiderSpeed: 1.3,
     playerSpeed: 5,
+    playerStartMoney: 10,
     addObject: function(object) {
         Game.elements.push(object);
         Game.graphics.addElement(object.element);
