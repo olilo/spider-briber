@@ -2,11 +2,11 @@ var Game = {
     fps: 30,
     tileSize: 32,
     graphics: null,  // is initialized when site is loaded
-    randomSpiders: 15,
+    randomSpiders: 20,
     spiderSprite: "img/spider_0.png",
     spiderWidth: 45,
     spiderHeight: 45,
-    spiderAttack: 5,
+    spiderAttack: 10,
     spiderSpeed: 1.3,
     playerSpeed: 5,
     playerStartMoney: 10,
