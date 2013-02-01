@@ -2,12 +2,14 @@ var Game = {
     fps: 30,
     tileSize: 32,
     graphics: null,  // is initialized when site is loaded
+    randomSpiders: 20,
     spiderSprite: "img/spider_0.png",
     spiderWidth: 45,
     spiderHeight: 45,
-    spiderAttack: 5,
+    spiderAttack: 10,
     spiderSpeed: 1.3,
     playerSpeed: 5,
+    playerStartMoney: 10,
     addObject: function(object) {
         Game.elements.push(object);
         Game.graphics.addElement(object.element);
@@ -40,7 +42,16 @@ Game.resetData = function() {
     this.playerElement = new GameElement("img/player.gif", 350, 250, 50, 50);
     this.gates = [
         new Gate(new GameElement("img/Castle_2.png", 328, -16, 96, 96, {sx: 320, sy: 96}))
-        //new Gate(new GameElement("img/Castle_2.png", 1920, -1130, 96, 96, {sx: 320, sy: 96}))
+        //new Gate(new GameElement("img/Castle_2.png", 1928, -1136, 96, 96, {sx: 320, sy: 96}))
+    ];
+    this.gateOpener = [
+        {
+            x: 55 * Game.tileSize,
+            y: 55 * Game.tileSize,
+            width: Game.tileSize,
+            height: Game.tileSize,
+            opens: 1
+        }
     ];
 };
 

@@ -49,7 +49,7 @@ jQuery(function() {
     };
     Game.updateHUD = function() {
         jQuery(".health").html(Game.player.health).addClass(Game.player.health <= 25 ? "health-low" : "");
-        jQuery(".money").html(Game.player.money);
+        jQuery(".money").html(Game.player.money).addClass(Game.player.money <= 1 ? "money-low" : "");
     };
 
     jQuery(".lost").hide();
@@ -61,7 +61,7 @@ jQuery(function() {
     // player logic
     function Player() {
         this.health = 100;
-        this.money = 10;
+        this.money = Game.playerStartMoney;
         this.element = Game.playerElement;
         this.speed = Game.playerSpeed;
         this.lastClickedAt = {x: 0, y: 0};
@@ -96,18 +96,23 @@ jQuery(function() {
 
             // if clicked on spider: bribe the spider
             var clickedOnSpider = false;
-            for (var i = Game.elements.length - 1; i >= 0; i--) {
-                var elem = Game.elements[i].element;
-                if (Game.elements[i] instanceof Spider &&
-                    clickedAt.x >= elem.x && clickedAt.x <= elem.x + elem.width &&
-                    clickedAt.y >= elem.y && clickedAt.y <= elem.y + elem.height &&
-                    !Game.elements[i].bribed) {
+            if (this.money > 0) {
+                for (var i = Game.elements.length - 1; i >= 0; i--) {
+                    var elem = Game.elements[i].element;
+                    if (Game.elements[i] instanceof Spider &&
+                        clickedAt.x >= elem.x - 10 && clickedAt.x <= elem.x + elem.width + 20 &&
+                        clickedAt.y >= elem.y - 10 && clickedAt.y <= elem.y + elem.height + 20 &&
+                        !Game.elements[i].bribed) {
 
-                    clickedOnSpider = true;
-                    Game.elements[i].bribed = true;
-                    Game.elements[i].bribedCountdown = Game.fps * 10;
-                    this.money--;
-                    break;
+                        clickedOnSpider = true;
+                        Game.elements[i].bribed = true;
+                        Game.elements[i].bribedCountdown = Game.fps * 10;
+                        this.money--;
+
+                        // first bribery opens first gate
+                        Game.gates[0].open();
+                        break;
+                    }
                 }
             }
 
@@ -140,7 +145,7 @@ jQuery(function() {
 
             Game.background.translate(xDelta, yDelta);
             Game.towerOverlay.translate(xDelta, yDelta);
-            for (i = 0; i < Game.gates.length; i++) {
+            for (var i = 0; i < Game.gates.length; i++) {
                 Game.gates[i].element.move(-xDelta, -yDelta);
             }
         }
@@ -156,6 +161,7 @@ jQuery(function() {
         var elemY = - Game.background.sy + this.y;
         this.element = new GameElement(Game.spiderSprite, elemX, elemY, Game.spiderWidth, Game.spiderHeight, {sx: 45, sy: 66});
         this.animationCounter = 0;
+        this.attackCooldown = 0;
         this.health = 20;
         this.bribed = false;
         this.bribedCountdown = 0;
@@ -255,9 +261,11 @@ jQuery(function() {
     };
 
     Spider.prototype.attack = function() {
-        if (this.animationCounter % 32 == 0) {
+        if (this.attackCooldown <= 0) {
             Game.player.health -= Game.spiderAttack;
+            this.attackCooldown = Game.fps;
         }
+        this.attackCooldown--;
         Game.updateHUD();
     };
 
@@ -400,7 +408,20 @@ jQuery(function() {
         Game.addObject(new Spider(30, 55));
         Game.addObject(new Spider(40, 55));
 
+        // bring some randomness into the play
+        var generatedSpiders = 0;
+        while(generatedSpiders < Game.randomSpiders) {
+            var x = 34 + Math.floor(Math.random() * 41);
+            var y = 40 + Math.floor(Math.random() * 31);
+            if (walkableMap[y].charAt(x) == 'x') {
+                Game.addObject(new Spider(x, y));
+                generatedSpiders++;
+            }
+        }
+
+
         jQuery(".health").removeClass("health-low");
+        jQuery(".money").removeClass("money-low");
         jQuery(".lost").hide();
         jQuery(".won").hide();
         jQuery(".paused").hide();
