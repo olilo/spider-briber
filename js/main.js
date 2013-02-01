@@ -5,8 +5,9 @@ jQuery(function() {
             if (!Game.pausePressed) {
                 window.cancelAnimationFrame(Game.animationFrameId);
                 console.log("Paused");
-                stepSleeping();
                 Game.pausePressed = true;
+                jQuery(".paused").show();
+                stepSleeping();
                 return;
             }
         } else {
@@ -20,7 +21,7 @@ jQuery(function() {
             jQuery(".lost").show();
         }
 
-        if (Game.tileSize * 52 <= Game.player.getMapPosX() && Game.player.getMapPosX() <= Game.tileSize * 65 &&
+        if (Game.tileSize * 52 <= Game.player.getMapPosX() && Game.player.getMapPosX() <= Game.tileSize * 85 &&
             Game.tileSize * 17 <= Game.player.getMapPosY() && Game.player.getMapPosY() <= Game.tileSize * 30) {
 
             window.cancelAnimationFrame(Game.animationFrameId);
@@ -37,9 +38,10 @@ jQuery(function() {
         if (keyPressed(keys.pause)) {
             if (!Game.pausePressed) {
                 window.cancelAnimationFrame(Game.sleepingFrameId);
-                step();
                 Game.nextGameTick = (new Date).getTime() + 200;
                 Game.pausePressed = true;
+                jQuery(".paused").hide();
+                step();
             }
         } else {
             Game.pausePressed = false;
@@ -52,6 +54,7 @@ jQuery(function() {
 
     jQuery(".lost").hide();
     jQuery(".won").hide();
+    jQuery(".paused").hide();
     Game.graphics = new Graphics(jQuery(".playingfield"));
 
 
@@ -400,6 +403,7 @@ jQuery(function() {
         jQuery(".health").removeClass("health-low");
         jQuery(".lost").hide();
         jQuery(".won").hide();
+        jQuery(".paused").hide();
 
         step();
     };

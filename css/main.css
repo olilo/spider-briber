@@ -352,7 +352,7 @@ textarea {
     z-index: 1;
 }
 
-.lost, .won {
+.lost, .won, .paused {
     font-size: 60px;
     font-style: italic;
     background: #696969;
@@ -379,4 +379,20 @@ textarea {
 
 .won a:visited, .won a {
     color: blue;
+}
+
+.paused {
+    background: #696969;
+    font-size: 20px;
+    left: 220px;
+}
+
+.paused .highlight {
+    font-size: 50px;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
 }
