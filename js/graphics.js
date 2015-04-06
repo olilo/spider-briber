@@ -14,6 +14,8 @@ function GameElement(url, x, y, width, height, translate) {
     if (translate) {
         this.sx = translate.sx;
         this.sy = translate.sy;
+        this.swidth = width;
+        this.sheight = height;
     } else {
         this.sx = null;
         this.sy = null;
@@ -106,7 +108,7 @@ Graphics.prototype.redraw = function() {
             elem = this.elements[i];
             if (!elem.canvasImg.complete) continue;
             if (elem.sx !== null) {
-                this.context.drawImage(elem.canvasImg, elem.sx, elem.sy, elem.width, elem.height,
+                this.context.drawImage(elem.canvasImg, elem.sx, elem.sy, elem.swidth, elem.sheight,
                                                        elem.x, elem.y, elem.width, elem.height);
             } else {
                 this.context.drawImage(elem.canvasImg, elem.x, elem.y, elem.width, elem.height);

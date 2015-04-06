@@ -91,6 +91,7 @@ jQuery(function() {
 
         // clicked somewhere new
         if (clickedAt.x != this.lastClickedAt.x || clickedAt.y != this.lastClickedAt.y) {
+            console.log("clicked at " + clickedAt.x + "/" + clickedAt.y);
             this.lastClickedAt.x = clickedAt.x;
             this.lastClickedAt.y = clickedAt.y;
 

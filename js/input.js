@@ -92,6 +92,8 @@ jQuery("body").bind('keydown', function(e) {
 });
 
 jQuery(".playingfield").bind('click', function(e) {
-    clickedAt.x = e.offsetX;
-    clickedAt.y = e.offsetY;
+    offset = jQuery(".playingfield").offset();
+    clickedAt.x = e.clientX - offset.left;
+    clickedAt.y = parseInt(e.clientY - offset.top + $(document).scrollTop());
+    console.log(clickedAt);
 });
