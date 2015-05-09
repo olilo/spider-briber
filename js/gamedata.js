@@ -10,6 +10,7 @@ var Game = {
     spiderSpeed: 1.3,
     playerSpeed: 5,
     playerStartMoney: 10,
+    playerSprite: "img/knight.png",
     addObject: function(object) {
         Game.elements.push(object);
         Game.graphics.addElement(object.element);
@@ -37,9 +38,9 @@ var Game = {
 
 Game.resetData = function() {
     this.elements = [];
-    this.background = new GameElement("img/background.png", 0, 0, 800, 600, {sx: 280, sy: 2320});
-    this.towerOverlay = new GameElement("img/towers.png", 0, 0, 800, 600, {sx: 280, sy: 2320});
-    this.playerElement = new GameElement("img/player.gif", 350, 250, 50, 50);
+    this.background = new GameElement("img/background.png", 0, 0, 800, 400, {sx: 280, sy: 2320});
+    this.towerOverlay = new GameElement("img/towers.png", 0, 0, 800, 400, {sx: 280, sy: 2320});
+    this.playerElement = new GameElement("img/knight.png", 350, 250, 32, 32, {sx: 64, sy: 0});
     this.gates = [
         new Gate(new GameElement("img/Castle_2.png", 328, -16, 96, 96, {sx: 320, sy: 96}))
         //new Gate(new GameElement("img/Castle_2.png", 1928, -1136, 96, 96, {sx: 320, sy: 96}))
@@ -55,42 +56,6 @@ Game.resetData = function() {
     ];
 };
 
-
-function Gate(element) {
-    this.isOpen = false;
-    this.element = element;
-    this.isOpening = false;
-}
-
-Gate.prototype.update = function() {
-    if (this.isOpening) {
-        if (this.element.height > 0) {
-            this.element.height -= 2;
-        } else {
-            this.element.height = 0;
-            this.isOpening = false;
-            this.isOpen = true;
-            // TODO change element on graphics to the open element
-        }
-    }
-};
-
-Gate.prototype.hitTest = function(x, y) {
-    if (this.isOpen) {
-        return false;
-    }
-
-    var gateLeft = this.element.x + Game.background.sx,
-        gateRight = gateLeft + this.element.width,
-        gateTop = this.element.y + Game.background.sy,
-        gateBottom = gateTop + this.element.height - 8;
-
-    return gateLeft < x && x < gateRight && gateTop < y && y < gateBottom;
-};
-
-Gate.prototype.open = function() {
-    this.isOpening = true;
-};
 
 /*
  * walkable tiles as a map. x marks where character can walk.

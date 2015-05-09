@@ -24,22 +24,25 @@
 <!-- Add your site or application content here -->
 <h1>Spider Briber</h1>
 
-<audio autoplay loop>
-    <source src="img/spider_briber_musik.ogg" type="audio/ogg">
-    <source src="img/spider_briber_musik.mp3" type="audio/mpeg">
-    No music for you :(
-</audio>
-
 <div class="wrapper">
+    <div class="music">
+        <audio class="player_audio" autoplay loop>
+            <source src="img/spider_briber_musik.ogg" type="audio/ogg">
+            <source src="img/spider_briber_musik.mp3" type="audio/mpeg">
+            No music for you :(
+        </audio>
+    </div>
+
     <p>
         Move by either clicking somewhere or use wasd/arrow keys.<br />
         You can also click on spiders and bribe them with a fly. Go on, try it :) <br />
         The goal of this game is to get to the armory.<br />
         Click on the first spider to open the first gate.
     </p>
+
     <div class="hud">
         Health: <span class="health">100</span>
-        Flies: <span class="money">0</span>
+        Coins: <span class="money">0</span>
         FPS: <span class="fps">0</span>
     </div>
     <div class="playingfield"><img class="loader" src="img/loader.gif" /></div>
@@ -63,6 +66,7 @@
 <script src="js/graphics.js"></script>
 <script src="js/input.js"></script>
 <script src="js/gamedata.js"></script>
+<script src="js/units.js"></script>
 <script src="js/main.js"></script>
 
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
