@@ -1,7 +1,7 @@
 // Gates
-function Gate(element) {
+function Gate(x, y) {
     this.isOpen = false;
-    this.element = element;
+    this.element = new GameElement(Game.gateSprite, x, y, Game.gateWidth, Game.gateHeight, {sx: 320, sy: 96});
     this.isOpening = false;
 }
 
@@ -36,11 +36,58 @@ Gate.prototype.open = function() {
 };
 
 
+// thrown coin logic
+function Coin(x, y, targetX, targetY) {
+    this.element = new GameElement(Game.coinSprite, x, y, Game.coinWidth, Game.coinHeight);
+    this.x = this.getMapPosX();
+    this.y = this.getMapPosY();
+    this.speed = Game.coinSpeed;
+    this.target = {x: Game.background.sx + targetX, y: Game.background.sy + targetY};
+}
+
+Coin.prototype.getMapPosX = function() {
+    return Game.background.sx + this.element.x;
+};
+
+Coin.prototype.getMapPosY = function() {
+    return Game.background.sy + this.element.y;
+};
+
+Coin.prototype.update = function() {
+    // reposition coin relative to background
+    this.element.x = - Game.background.sx + this.x;
+    this.element.y = - Game.background.sy + this.y;
+
+    // move to target position
+    var targetDiffX = this.target.x - this.getMapPosX();
+    var targetDiffY = this.target.y - this.getMapPosY();
+    if (targetDiffX != 0 || targetDiffY != 0) {
+        //console.log(Math.min(targetDiffY, this.speed));
+        var deltaX = Math.max(-this.speed, Math.min(targetDiffX, this.speed));
+        var deltaY = Math.max(-this.speed, Math.min(targetDiffY, this.speed));
+        this.move(deltaX, deltaY);
+    } else {
+        Game.removeObject(this);
+    }
+};
+
+Coin.prototype.move = function(xDelta, yDelta) {
+    if (Game.checkMovable(this.element, xDelta, yDelta)) {
+        this.x += xDelta;
+        this.y += yDelta;
+    } else if (Game.checkMovable(this.element, 0, yDelta)) {
+        this.y += yDelta;
+    } else if (Game.checkMovable(this.element, xDelta, 0)) {
+        this.x += xDelta;
+    }
+};
+
+
 // player logic
 function Player() {
     this.health = 100;
     this.money = Game.playerStartMoney;
-    this.element = Game.playerElement;
+    this.element = new GameElement(Game.playerSprite, 350, 250, Game.playerWidth, Game.playerHeight, {sx: 64, sy: 0});
     this.speed = Game.playerSpeed;
     this.lastClickedAt = {x: 0, y: 0};
     this.target = {x: this.getMapPosX(), y: this.getMapPosY()};
@@ -52,6 +99,31 @@ Player.prototype.getMapPosX = function() {
 
 Player.prototype.getMapPosY = function() {
     return Game.background.sy + this.element.y;
+};
+
+Player.prototype.bribe = function() {
+    if (this.money > 0) {
+        for (var i = Game.elements.length - 1; i >= 0; i--) {
+            var elem = Game.elements[i].element;
+            if (Game.elements[i] instanceof Spider &&
+                clickedAt.x >= elem.x - 10 && clickedAt.x <= elem.x + elem.width + 20 &&
+                clickedAt.y >= elem.y - 10 && clickedAt.y <= elem.y + elem.height + 20 &&
+                !Game.elements[i].bribed) {
+
+                Game.elements[i].bribed = true;
+                Game.elements[i].bribedCountdown = Game.fps * Game.spiderBribetime;
+                this.money--;
+
+                Game.addObject(new Coin(this.element.x, this.element.y, elem.x, elem.y));
+
+                // first bribery opens first gate
+                Game.gates[0].open();
+                return true;
+            }
+        }
+    }
+
+    return false;
 };
 
 Player.prototype.update = function() {
@@ -74,28 +146,7 @@ Player.prototype.update = function() {
         this.lastClickedAt.y = clickedAt.y;
 
         // if clicked on spider: bribe the spider
-        var clickedOnSpider = false;
-        if (this.money > 0) {
-            for (var i = Game.elements.length - 1; i >= 0; i--) {
-                var elem = Game.elements[i].element;
-                if (Game.elements[i] instanceof Spider &&
-                    clickedAt.x >= elem.x - 10 && clickedAt.x <= elem.x + elem.width + 20 &&
-                    clickedAt.y >= elem.y - 10 && clickedAt.y <= elem.y + elem.height + 20 &&
-                    !Game.elements[i].bribed) {
-
-                    clickedOnSpider = true;
-                    Game.elements[i].bribed = true;
-                    Game.elements[i].bribedCountdown = Game.fps * 10;
-                    this.money--;
-
-                    // first bribery opens first gate
-                    Game.gates[0].open();
-                    break;
-                }
-            }
-        }
-
-        if (!clickedOnSpider) {
+        if (!this.bribe()) {
             this.target.x = Game.background.sx + clickedAt.x - this.element.width / 2;
             this.target.y = Game.background.sy + clickedAt.y - this.element.height / 2;
         }
@@ -128,7 +179,7 @@ Player.prototype.move = function(xDelta, yDelta) {
             Game.gates[i].element.move(-xDelta, -yDelta);
         }
 
-        // make player look in to direction of movement
+        // make player look into direction of movement
         if (yDelta > 0) {
             this.element.sx = 64;
         } else if (yDelta < 0) {

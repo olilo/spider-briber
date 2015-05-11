@@ -8,14 +8,34 @@ var Game = {
     spiderHeight: 45,
     spiderAttack: 10,
     spiderSpeed: 1.3,
+    spiderBribetime: 20,
+    playerSprite: "img/knight.png",
+    playerWidth: 32,
+    playerHeight: 32,
     playerSpeed: 5,
     playerStartMoney: 10,
-    playerSprite: "img/knight.png",
+    coinSprite: "img/coin.png",
+    coinWidth: 16,
+    coinHeight: 16,
+    coinSpeed: 10,
+    gateSprite: "img/Castle_2.png",
+    gateWidth: 96,
+    gateHeight: 96,
     addObject: function(object) {
         Game.elements.push(object);
         Game.graphics.addElement(object.element);
     },
+    removeObject: function(object) {
+        for(var i = 0; i < Game.elements.length; i++) {
+            if (Game.elements[i] == object) {
+                Game.elements.splice(i, 1);
+                break;
+            }
+        }
+        Game.graphics.removeElement(object.element);
+    },
     checkMovable: function(element, xDelta, yDelta) {
+        console.log("Checking " + element.x + "/" + element.y + " - " + (element.x + xDelta) + "/" + (element.y + yDelta));
         var xNew = Game.background.sx + element.x + xDelta,
             yNew = Game.background.sy + element.y + yDelta,
             xTile = Math.floor((xNew - 10) / Game.tileSize),
@@ -40,10 +60,9 @@ Game.resetData = function() {
     this.elements = [];
     this.background = new GameElement("img/background.png", 0, 0, 800, 400, {sx: 280, sy: 2320});
     this.towerOverlay = new GameElement("img/towers.png", 0, 0, 800, 400, {sx: 280, sy: 2320});
-    this.playerElement = new GameElement("img/knight.png", 350, 250, 32, 32, {sx: 64, sy: 0});
     this.gates = [
-        new Gate(new GameElement("img/Castle_2.png", 328, -16, 96, 96, {sx: 320, sy: 96}))
-        //new Gate(new GameElement("img/Castle_2.png", 1928, -1136, 96, 96, {sx: 320, sy: 96}))
+        new Gate(328, -16)
+        //new Gate(1928, -1136)
     ];
     this.gateOpener = [
         {
